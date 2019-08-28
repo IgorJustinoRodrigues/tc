@@ -1,13 +1,9 @@
 $(document).ready(function(){
-    $('.sidenav').sidenav();
-    $(".dropdown-trigger").dropdown();
-    $('.collapsible').collapsible();
     $('.modal').modal();
 });
 
 $('.cpf').mask('000.000.000-00');
-$('.telefone').mask('(00) 0 0000-0000 / (00) 0 0000-0000');
-
+$('.telefone').mask('(00) 0 0000-0000');
 
 function confirmacao(descricao, link){
     $("#confirmacao_descricao").html(descricao);

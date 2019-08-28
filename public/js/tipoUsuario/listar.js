@@ -5,5 +5,5 @@ $(document).keypress(function(e) {
 });    
 
 function buscar(){
-    window.location.href = ($("#link").val() + 'aluno/listar/'+$('#busca').val());
+    window.location.href = ($("#link").val() + 'tipoUsuario/listar/'+$('#busca').val());
 }
