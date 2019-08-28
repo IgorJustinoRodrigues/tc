@@ -1,5 +1,7 @@
 $(document).ready(function(){
     $('.modal').modal();
+    $(".dropdown-trigger").dropdown();
+    $('.sidenav').sidenav();
 });
 
 $('.cpf').mask('000.000.000-00');

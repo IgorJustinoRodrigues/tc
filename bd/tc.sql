@@ -8,19 +8,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema tc
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema tc
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `tc` DEFAULT CHARACTER SET utf8 ;
+USE `tc` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`tipo_usuario`
+-- Table `tc`.`tipo_usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`tipo_usuario` (
+CREATE TABLE IF NOT EXISTS `tc`.`tipo_usuario` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `descricao` VARCHAR(100) NOT NULL,
   `status` INT(1) NOT NULL,
@@ -29,9 +29,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`usuario`
+-- Table `tc`.`usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`usuario` (
+CREATE TABLE IF NOT EXISTS `tc`.`usuario` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(100) NOT NULL,
   `foto` VARCHAR(45) NULL,
@@ -48,19 +48,19 @@ CREATE TABLE IF NOT EXISTS `mydb`.`usuario` (
   `cadastro` DATETIME NOT NULL,
   `tipo_usuario_id` INT NOT NULL,
   PRIMARY KEY (`id`, `tipo_usuario_id`),
-  INDEX `fk_usuario_tipo_usuario_idx` (`tipo_usuario_id` ASC) VISIBLE,
+  INDEX `fk_usuario_tipo_usuario_idx` (`tipo_usuario_id` ASC),
   CONSTRAINT `fk_usuario_tipo_usuario`
     FOREIGN KEY (`tipo_usuario_id`)
-    REFERENCES `mydb`.`tipo_usuario` (`id`)
+    REFERENCES `tc`.`tipo_usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`permissao`
+-- Table `tc`.`permissao`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`permissao` (
+CREATE TABLE IF NOT EXISTS `tc`.`permissao` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `descricao` VARCHAR(50) NOT NULL,
   `nivel` INT(2) NOT NULL,
@@ -70,31 +70,31 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`tipo_usuario_permissao`
+-- Table `tc`.`tipo_usuario_permissao`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`tipo_usuario_permissao` (
+CREATE TABLE IF NOT EXISTS `tc`.`tipo_usuario_permissao` (
   `tipo_usuario_id` INT NOT NULL,
   `permissao_id` INT NOT NULL,
   PRIMARY KEY (`tipo_usuario_id`, `permissao_id`),
-  INDEX `fk_tipo_usuario_has_permissao_permissao1_idx` (`permissao_id` ASC) VISIBLE,
-  INDEX `fk_tipo_usuario_has_permissao_tipo_usuario1_idx` (`tipo_usuario_id` ASC) VISIBLE,
+  INDEX `fk_tipo_usuario_has_permissao_permissao1_idx` (`permissao_id` ASC),
+  INDEX `fk_tipo_usuario_has_permissao_tipo_usuario1_idx` (`tipo_usuario_id` ASC),
   CONSTRAINT `fk_tipo_usuario_has_permissao_tipo_usuario1`
     FOREIGN KEY (`tipo_usuario_id`)
-    REFERENCES `mydb`.`tipo_usuario` (`id`)
+    REFERENCES `tc`.`tipo_usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_tipo_usuario_has_permissao_permissao1`
     FOREIGN KEY (`permissao_id`)
-    REFERENCES `mydb`.`permissao` (`id`)
+    REFERENCES `tc`.`permissao` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`veiculo`
+-- Table `tc`.`veiculo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`veiculo` (
+CREATE TABLE IF NOT EXISTS `tc`.`veiculo` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `tipo` INT(2) NULL,
   `modelo` VARCHAR(100) NULL,
@@ -108,9 +108,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`registro`
+-- Table `tc`.`registro`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`registro` (
+CREATE TABLE IF NOT EXISTS `tc`.`registro` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `tipo_usuario_id` INT NOT NULL,
   `veiculo_id` INT NOT NULL,
@@ -121,25 +121,25 @@ CREATE TABLE IF NOT EXISTS `mydb`.`registro` (
   `descricao` TEXT NULL,
   `status` INT(1) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_usuario_has_veiculo_veiculo1_idx` (`veiculo_id` ASC) VISIBLE,
-  INDEX `fk_usuario_has_veiculo_usuario1_idx` (`id` ASC, `tipo_usuario_id` ASC) VISIBLE,
+  INDEX `fk_usuario_has_veiculo_veiculo1_idx` (`veiculo_id` ASC),
+  INDEX `fk_usuario_has_veiculo_usuario1_idx` (`id` ASC, `tipo_usuario_id` ASC),
   CONSTRAINT `fk_usuario_has_veiculo_usuario1`
     FOREIGN KEY (`id` , `tipo_usuario_id`)
-    REFERENCES `mydb`.`usuario` (`id` , `tipo_usuario_id`)
+    REFERENCES `tc`.`usuario` (`id` , `tipo_usuario_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_usuario_has_veiculo_veiculo1`
     FOREIGN KEY (`veiculo_id`)
-    REFERENCES `mydb`.`veiculo` (`id`)
+    REFERENCES `tc`.`veiculo` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`auditoria`
+-- Table `tc`.`auditoria`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`auditoria` (
+CREATE TABLE IF NOT EXISTS `tc`.`auditoria` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `tipo` INT(1) NOT NULL,
   `usuario_id` INT NOT NULL,
@@ -148,10 +148,10 @@ CREATE TABLE IF NOT EXISTS `mydb`.`auditoria` (
   `descricao` TEXT NULL,
   `data` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_auditoria_usuario1_idx` (`usuario_id` ASC) VISIBLE,
+  INDEX `fk_auditoria_usuario1_idx` (`usuario_id` ASC),
   CONSTRAINT `fk_auditoria_usuario1`
     FOREIGN KEY (`usuario_id`)
-    REFERENCES `mydb`.`usuario` (`id`)
+    REFERENCES `tc`.`usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

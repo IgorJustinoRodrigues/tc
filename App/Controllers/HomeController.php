@@ -7,8 +7,10 @@ class HomeController extends Controller{
     public function index(){
         $this->render('home/index', 'Inicio');
     }
-    
-    public function teste(){
-        
+
+    public function painel(){
+        $this->validaUsuario();
+
+        $this->render('home/painel', "Meu painel");
     }
 }

@@ -117,20 +117,20 @@ abstract class Controller{
         }
     }
     
-    public function validaUsuario(){
+    public function validaUsuario($tempo = 6000){
 
         if(!Sessao::logado()){
             Sessao::gravaMensagem('Acesse a sua conta!');
             Sessao::setUsuario(null);
             Sessao::setLogado(false);
-            $this->redirect('/usuario/login');
+            $this->redirect('usuario/login');
             exit();
         } else {
-            header("Refresh:100000; url=".LINK."/usuario/sair");
+            header("Refresh:$tempo; url=".LINK."usuario/sair");
         }
     }
     
-    public function nivelAcesso($nivel, $caminho = '/usuario/'){
+    public function nivelAcesso($nivel, $caminho = 'usuario/'){
         $permissoes = Sessao::getUsuario("permissoes");
         
         if(!in_array($nivel, $permissoes)){
