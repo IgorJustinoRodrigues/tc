@@ -1,0 +1,45 @@
+body{
+    font-family: 'Krub', sans-serif;
+}
+
+.nav-preto{
+    background: #000;    
+}
+
+.logo{
+    width: 170px;
+    vertical-align: middle;
+}
+
+.fundo{
+    width: 100%;
+    opacity: 0.54;
+}
+
+.imagem-fundo{
+    max-width: 100%;
+}
+
+
+.margem{
+    margin-left: 50px;    
+    margin-right: 50px;    
+}
+
+.icone{
+    width: 30px;
+}
+
+.icone-fixo{
+    width: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+    .parallax-container{
+        height: 180px;
+    }
+
+    .logo{
+        width: 140px;
+    }
+}
