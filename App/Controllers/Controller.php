@@ -138,4 +138,24 @@ abstract class Controller{
             $this->redirect($caminho);
         }
     }
+    
+    public function inserirAuditoria($info){
+        $bo = new \App\Models\BO\AuditoriaBO();
+        $tabela = \App\Models\Entidades\Auditoria::TABELA;
+        
+        $campos = json_encode($info['campos']);
+        
+        $dados = [
+            'tipo' => $info['tipo'],
+            'usuario_id' => Sessao::getUsuario('id'),
+            'tabela' => $info['tabela'],
+            'campos' => $campos,
+            'descricao' => $info['descricao'],
+            'data' => date("Y-m-d H:i:s")
+        ];
+        $validacao = [];
+        
+        $bo->inserir($tabela, $dados, $validacao);
+    }
+
 }

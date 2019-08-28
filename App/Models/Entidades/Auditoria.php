@@ -6,7 +6,16 @@ class Auditoria{
     const TABELA = 'auditoria';
     const CAMPOS = ['id', 'tipo', 'usuario_id', 'tabela', 'campos', 'descricao', 'data'];
     const OBRIGATORIO = ['tipo', 'usuario_id', 'tabela', 'data'];
-    
+    /*
+     * Tipos
+     * 1 - Inserção
+     * 2 - Edição
+     * 3 - Exclusão
+     * 4 - Login
+     * 5 - Logoff
+     * 6 - Criação de Relatorio
+     * 7 - Outros
+     */
     private $id;
     private $tipo;
     private $usuario_id;

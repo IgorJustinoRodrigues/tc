@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controllers;
 use App\Lib\Sessao;
 use App\Models\BO\UsuarioBO;
@@ -66,6 +65,15 @@ class UsuarioController extends Controller{
                     Sessao::setUsuario($usuario);
                     Sessao::setLogado(true);
                     Sessao::limpaFormulario();
+                                                
+                    $info = [
+                        'tipo' => 4,
+                        'tabela' => null,
+                        'campos' => array(),
+                        'descricao' => 'O usuario [nome]'
+                    ];
+
+                    $this->inserirAuditoria($info);
 
                     Sessao::gravaMensagem('Seja bem-vindo(a) ' . Sessao::getUsuario('nome') . '! login efetuado com sucesso.');
 
