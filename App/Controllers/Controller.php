@@ -129,5 +129,13 @@ abstract class Controller{
             header("Refresh:100000; url=".LINK."/usuario/sair");
         }
     }
-
+    
+    public function nivelAcesso($nivel, $caminho = '/usuario/'){
+        $permissoes = Sessao::getUsuario("permissoes");
+        
+        if(!in_array($nivel, $permissoes)){
+            Sessao::gravaMensagem("Você não tem permissão para acessar este recurso.<br>Nível de acesso " . $nivel);
+            $this->redirect($caminho);
+        }
+    }
 }
