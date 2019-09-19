@@ -34,7 +34,6 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `tc`.`usuario` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(100) NOT NULL,
-  `foto` VARCHAR(45) NULL,
   `email` VARCHAR(200) NOT NULL,
   `fone` VARCHAR(16) NULL,
   `endereco` VARCHAR(200) NULL,
@@ -160,3 +159,8 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO `tc`.`permissao` (`descricao`, `nivel`, `status`) VALUES ('Gerenciar Usuários', '1', '1');
+INSERT INTO `tc`.`tipo_usuario` (`descricao`, `status`) VALUES ('Administrador', '1');
+INSERT INTO `tc`.`tipo_usuario_permissao` (`tipo_usuario_id`, `permissao_id`) VALUES ('1', '1');
+INSERT INTO `tc`.`usuario` (`nome`, `foto`, `email`, `cargo`, `senha`, `status`, `tipo_usuario_id`) VALUES ('Admin', '', 'admin@gmail.com', 'Administrado do Sistema', md5('admin'), '1', '1');

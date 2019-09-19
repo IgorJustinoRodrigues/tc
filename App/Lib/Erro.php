@@ -17,6 +17,10 @@ class Erro extends Controller{
 
     public function render(){
         Sessao::gravaMensagem("Erro: " . $this->code  . " - " . $this->message);
-        $this->redirect('home/');
+        if(Sessao::logado()){
+            $this->redirect('home/painel');
+        } else {
+            $this->redirect('home/');            
+        }
     }
 }

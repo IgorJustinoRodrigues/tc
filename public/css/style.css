@@ -34,6 +34,14 @@ body{
     width: 40px;
 }
 
+.switch label input[type=checkbox]:checked + .lever {
+    background-color: #8bc34a;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+    background-color: #238c27;
+}
+
 @media only screen and (max-width: 600px) {
     .parallax-container{
         height: 180px;

@@ -130,7 +130,7 @@ abstract class Controller{
         }
     }
     
-    public function nivelAcesso($nivel, $caminho = 'usuario/'){
+    public function nivelAcesso($nivel, $caminho = 'home/painel'){
         $permissoes = Sessao::getUsuario("permissoes");
         
         if(!in_array($nivel, $permissoes)){
