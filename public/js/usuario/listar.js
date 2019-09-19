@@ -4,6 +4,6 @@ $(document).keypress(function(e) {
     }
 });    
 
-function buscar(){
-    window.location.href = ($("#link").val() + 'usuario/listar/'+$('#busca').val());
+function buscar(controler){
+    window.location.href = ($("#link").val() + controler +'/listar/'+$('#busca').val());
 }

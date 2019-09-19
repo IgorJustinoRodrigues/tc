@@ -92,7 +92,7 @@ class UsuarioController extends Controller{
                         }
                     }
                 }
-
+                
                 $validacao = Usuario::OBRIGATORIO;
                 $condicao = "id = ?";
                 $valorCondicao = [$vetor['id']];
@@ -119,7 +119,120 @@ class UsuarioController extends Controller{
         
         $this->redirect('usuario/listar');
     }
+
+    public function listar($parametro) {
+        $this->validaUsuario();
+        $this->nivelAcesso(1);
         
+        $bo = new UsuarioBO();
+        
+        if(!is_numeric($parametro[0])){
+            $this->redirect('usuario/listar/1/'. $parametro[0]);
+        }
+        
+        $p = (isset($parametro[0]) or is_numeric($parametro[0])) ? $parametro[0] : 1;
+        $busca = (isset($parametro[1])) ? $parametro[1] : "";
+        
+        $quantidade = 5;
+        $pagina = $p * $quantidade - $quantidade;
+        
+        $condicao = "";
+        $valoresCondicao = [];
+
+        if($busca){
+            $condicao .= "nome like '%?%' ";
+            array_push($valoresCondicao, "$busca");
+        }
+        
+        $orderBy = "nome asc";
+        
+        $resultado = $bo->listar(Usuario::TABELA, ["*"], $quantidade, $pagina, $condicao, $valoresCondicao, $orderBy);
+        $this->setViewParam('usuarios', $resultado);
+        $quanUsuarios = $bo->selecionar(Usuario::TABELA, ["count(id) as id"], null, null, $condicao, $valoresCondicao, $orderBy);
+
+        $quanPaginas = ceil($quanUsuarios->getId() / $quantidade);
+
+        if($p > $quanPaginas and $p != 1){
+            Sessao::gravaMensagem("Página não encontrada!");
+            $this->redirect('usuario/listar');
+        }
+        
+        if($p < 5){
+            $i = 0;
+            $fim = $quanPaginas < 5 ? $quanPaginas : 5;   
+        }else{
+            if($p < $quanPaginas - 2){
+                $i = $p - 3;
+                $fim = $p + 2;
+            } else {
+                $i = $quanPaginas - 5;
+                $fim = $quanPaginas;                                        
+            }
+        }
+
+        $paginacao = array(
+            'quanUsuarios' => $quanUsuarios->getId(),
+            'quanPaginas' => $quanPaginas,
+            'inicio' => $i,
+            'fim' => $fim,
+            'pagina' =>$p,
+            'anterior' => $p - 1,
+            'proxima' => $p + 1,
+            'busca' => $busca
+        );
+        $this->setViewParam('paginacao', $paginacao);
+
+        if($quanUsuarios->getId() < 1){
+            Sessao::gravaMensagem('Nenhum registro encontrado!');
+        }
+
+        $this->render('usuario/listar', "Lista de usuarios");
+    }
+
+    public function visualizar($parametro) {
+        $this->validaUsuario();
+        $this->nivelAcesso(1);
+       
+        $id = $parametro[0];
+
+        if(is_numeric($id)){
+            $bo = new UsuarioBO();
+
+            $tabela = Usuario::TABELA;
+            $campos = ['*'];
+            $condicao = "id = ?";
+            $quantidade = 1;
+            $pagina = null;
+            $valorCondicao = [$id];
+            $orderBy = null;
+            $debug = false;
+
+            $usuario = $bo->selecionar($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
+
+            if($usuario->getId() == FALSE){
+                $mensagem = "Usuário não encontrado.";
+                Sessao::gravaMensagem($mensagem);
+
+                $this->redirect('usuario/listar');
+            }else{
+                $bo = new TipoUsuarioBO();
+                $tipo_usuario = $bo->listarVetor(TipoUsuario::TABELA, ['*'], null, null, "status = ?", [1], 'descricao');
+                $this->setViewParam('tipo_usuario', $tipo_usuario);
+
+                $mensagem = "Dados de " . $usuario->getNome();
+                Sessao::gravaMensagem($mensagem);
+                
+                $this->setViewParam('usuario', $usuario);
+                $this->render('usuario/visualizar', "Usuário: ".$usuario->getNome());
+            }
+        } else {
+            $mensagem = "Acesso incorreto!";
+            Sessao::gravaMensagem($mensagem);
+
+            $this->redirect('usuario/listar');
+        }
+    }
+
     public function login(){
         if(Sessao::logado()){
             $mensagem = "O " . Sessao::getUsuario('cargo') . " " . Sessao::getUsuario('nome') . ", está logado no sistema!<br>Você não é o(a) " . Sessao::getUsuario('nome') . '? <a href="'.LINK.'usuario/sair" class="btn yellow white-text">Sair!</a>';

@@ -62,7 +62,7 @@
             </div>
 
             <button class="btn waves-effect waves-light black right col s12 m4" style="margin-bottom: 10px" type="submit">Salvar</button>
-            <a href="<?=LINK?>" class="btn waves-effect waves-light blue col s12 m4" type="submit">Voltar
+            <a href="<?=LINK?>usuario/listar" class="btn waves-effect waves-light blue col s12 m4" type="submit">Voltar
             </a>
         </div>
     </form>

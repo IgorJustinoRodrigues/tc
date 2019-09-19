@@ -2,7 +2,8 @@ $(document).ready(function(){
     $('.modal').modal();
     $(".dropdown-trigger").dropdown();
     $('.sidenav').sidenav();
-	$('select').formSelect();
+    $('select').formSelect();
+    $('.collapsible').collapsible();
 });
 
 $('.cpf').mask('000.000.000-00');
