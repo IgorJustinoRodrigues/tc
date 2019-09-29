@@ -4,8 +4,8 @@ namespace App\Models\Entidades;
 
 class TipoUsuario{
     const TABELA = 'tipo_usuario';
-    const CAMPOS = ['id', 'descricao', 'status'];
-    const OBRIGATORIO = ['descricao', 'status'];
+    const CAMPOS = ['id', 'descricao'];
+    const OBRIGATORIO = ['descricao'];
     
     private $id;
     private $descricao;

@@ -4,6 +4,11 @@ $(document).ready(function(){
     $('.sidenav').sidenav();
     $('select').formSelect();
     $('.collapsible').collapsible();
+
+    $('.carousel.carousel-slider').carousel({
+        fullWidth: true,
+        indicators: true
+    });
 });
 
 $('.cpf').mask('000.000.000-00');

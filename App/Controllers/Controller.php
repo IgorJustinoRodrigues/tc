@@ -157,5 +157,33 @@ abstract class Controller{
         
         $bo->inserir($tabela, $dados, $validacao);
     }
+    
+    public function atualizar_dados_usuario_sessao() {
+        $bo = new \App\Models\BO\UsuarioBO;
+
+        $tabela = \App\Models\Entidades\Usuario::TABELA . " a inner join " . \App\Models\Entidades\TipoUsuario::TABELA . " t on a.tipo_usuario_id = t.id";
+        $campos = ['a.*', 'date_format(a.cadastro, "%d/%m/%Y %H:%i") as cadastro', 't.descricao as tipo_usuario_nome'];
+        $quantidade = 1;
+        $pagina = null;
+        $condicao = "a.id = ?";
+        $valorCondicao = [Sessao::getUsuario('id')];
+        
+        $usuario = $bo->selecionarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, null);
+
+        $tipoUsuarioPermissaoBO = new \App\Models\BO\TipoUsuarioPermissaoBO();
+        $tipoPermissoes = $tipoUsuarioPermissaoBO->listarVetor(\App\Models\Entidades\TipoUsuarioPermissao::TABELA . ' tup inner join ' . \App\Models\Entidades\Permissao::TABELA . ' p on tup.permissao_id = p.id', ['p.nivel'], null, null, "tup.tipo_usuario_id = ? and p.status = 1 GROUP BY p.nivel", [$usuario['tipo_usuario_id']], 'p.nivel');
+
+        $permissoes = array();
+
+        if($usuario){
+            foreach ($tipoPermissoes as $key => $item){
+                array_push($permissoes, $item['nivel']);
+            }
+            
+            $usuario['permissoes'] = $permissoes;
+        
+            Sessao::setUsuario($usuario);
+        }
+    }
 
 }

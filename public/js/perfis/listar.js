@@ -5,5 +5,5 @@ $(document).keypress(function(e) {
 });    
 
 function buscar(){
-    window.location.href = ($("#link").val() + 'permissao/listar/'+$('#busca').val());
+    window.location.href = ($("#link").val() + 'perfis/listar/'+$('#busca').val());
 }

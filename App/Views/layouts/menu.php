@@ -18,10 +18,12 @@
             <li><a class="dropdown-trigger" href="#!" data-target="cadastro">Cadastro<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="cadastro" class="dropdown-content">
                 <li><a href="<?=LINK?>usuario/cadastro">Usuário</a></li>
+                <li><a href="<?=LINK?>perfis/cadastro">Perfis</a></li>
             </ul>
             <li><a class="dropdown-trigger" href="#!" data-target="listagem">Listagem<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="listagem" class="dropdown-content">
                 <li><a href="<?=LINK?>usuario/listar">Usuário</a></li>
+                <li><a href="<?=LINK?>perfis/listar">Perfis</a></li>
             </ul>
             <li title="<?=$Sessao::getUsuario("cargo")?>"><a class="dropdown-trigger" href="#!" data-target="dropdown1"><?=$Sessao::getUsuario("nome")?><i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="dropdown1" class="dropdown-content">
