@@ -22,9 +22,9 @@ class UsuarioController extends Controller{
         $this->nivelAcesso(1);
         
         $bo = new TipoUsuarioBO();
-        $tipo_usuario = $bo->listarVetor(TipoUsuario::TABELA, ['*'], null, null, "status = ?", [1], 'descricao');
+        $tipo_usuario = $bo->listarVetor(TipoUsuario::TABELA, ['*'], null, null, "", [], 'descricao');
         $this->setViewParam('tipo_usuario', $tipo_usuario);
-        
+
         $this->render('usuario/cadastro', "Cadastro de usuário");
         Sessao::limpaFormulario();
     }
@@ -77,6 +77,16 @@ class UsuarioController extends Controller{
                 }else{
                     Sessao::limpaFormulario();
                     Sessao::gravaMensagem("Cadastrado com sucesso!");
+                    
+                    $info = [
+                        'tipo' => 1,
+                        'tabela' => Usuario::TABELA,
+                        'campos' => $dados,
+                        'descricao' => 'O usuario [nome], efetuou o cadastro de um novo usuário no sistema.'
+                    ];
+
+                    $this->inserirAuditoria($info);
+
                     $this->redirect('usuario/visualizar/'.$id);
                 }
             }else{
@@ -243,10 +253,19 @@ class UsuarioController extends Controller{
         $this->render('usuario/login');
     }
     
-    public function sair() {
+    public function sair() {        
+        $info = [
+            'tipo' => 6,
+            'tabela' => Usuario::TABELA,
+            'campos' => array(),
+            'descricao' => 'O usuario [nome], saiu do sistema.'
+        ];
+
+        $this->inserirAuditoria($info);
+
         Sessao::setUsuario(null);
         Sessao::setLogado(false);
-        
+
         Sessao::gravaMensagem('Você saiu do sistema com sucesso!');
 
         $this->redirect('usuario/login');
@@ -264,19 +283,19 @@ class UsuarioController extends Controller{
 
                 $bo = new UsuarioBO();
                 
-                $tabela = Usuario::TABELA;
-                $campos = ['*'];
+                $tabela = Usuario::TABELA . ' u inner join ' . TipoUsuario::TABELA . ' t on u.tipo_usuario_id = t.id';
+                $campos = ['u.*', 't.descricao as tipo_usuario'];
                 $quantidade = 1;
                 $pagina = null;
-                $condicao = "nome = '?' and senha = '?'";
-                $valorCondicao = [$nome, $senha];
+                $condicao = "(nome = '?' and senha = '?') or (email = '?' and senha = '?')";
+                $valorCondicao = [$nome, $senha, $nome, $senha];
                 $orderBy = null;                
 
                 $usuario = $bo->selecionarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy);
 
                 if($usuario){
                     $tipoUsuarioPermissaoBO = new TipoUsuarioPermissaoBO();
-                    $tipoPermissoes = $tipoUsuarioPermissaoBO->listarVetor(TipoUsuarioPermissao::TABELA . ' tup inner join ' . Permissao::TABELA . ' p on tup.permissao_id = p.id', ['p.nivel'], null, null, "tup.tipo_usuario_id = ? and p.status = 1 GROUP BY p.nivel", [$usuario['tipo_usuario_id']], 'p.nivel');
+                    $tipoPermissoes = $tipoUsuarioPermissaoBO->listarVetor(TipoUsuarioPermissao::TABELA . ' tup inner join ' . Permissao::TABELA . ' p on tup.permissao_id = p.id', ['p.nivel'], null, null, "tup.tipo_usuario_id = ? and p.status = 1 GROUP BY p.nivel", [$usuario['tipo_usuario_id']], 'p.nivel');                    
 
                     $permissoes = array();
 
@@ -291,10 +310,10 @@ class UsuarioController extends Controller{
                     Sessao::limpaFormulario();
                                                 
                     $info = [
-                        'tipo' => 4,
-                        'tabela' => null,
+                        'tipo' => 5,
+                        'tabela' => Usuario::TABELA,
                         'campos' => array(),
-                        'descricao' => 'O usuario [nome]'
+                        'descricao' => 'O usuario [nome], efetuou login no sistema.'
                     ];
 
                     $this->inserirAuditoria($info);
