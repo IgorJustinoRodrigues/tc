@@ -24,7 +24,7 @@
                             <label for="cargo">Cargo*</label>
                         </div>
                         <div class="input-field col s12 m6">
-                            <select id="tipo_usuario_id" name="tipo_usuario_id" required disabled>
+                            <select id="tipo_usuario_id" name="tipo_usuario_id" required>
                                 <?php
                                 foreach ($viewVar['tipo_usuario'] as $item){
                                 ?>
@@ -64,10 +64,6 @@
                                     Ativo
                                 </label>
                             </div>
-                        </div>
-                        <div class="input-field col s12 m6 hide" id="confirmarSenha">
-                            <input type="password" class="form-control" id="senha3" name="senhaAtual" disabled required>
-                            <label for="senha3">Senha atual*</label>
                         </div>
                     </div>
                     

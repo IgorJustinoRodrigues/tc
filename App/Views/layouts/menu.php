@@ -5,7 +5,7 @@
         </a>
         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down margem">
-            <li><a href="<?=$Sessao::logado() ? LINK . 'home/painel' : LINK?>">Inicio</a></li>
+            <li><a href="<?=$Sessao::logado() ? LINK . 'home/painel' : LINK?>">INÍCIO</a></li>
             <?php
             if($Sessao::logado()){
             ?>
@@ -17,13 +17,32 @@
             </ul>
             <li><a class="dropdown-trigger" href="#!" data-target="cadastro">Cadastro<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="cadastro" class="dropdown-content">
+                <?php
+                if(in_array(1,$Sessao::getUsuario('permissoes'))){
+                ?>
                 <li><a href="<?=LINK?>usuario/cadastro">Usuário</a></li>
                 <li><a href="<?=LINK?>perfis/cadastro">Perfis</a></li>
+                <?php
+                }
+                ?>
             </ul>
             <li><a class="dropdown-trigger" href="#!" data-target="listagem">Listagem<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="listagem" class="dropdown-content">
+                <?php
+                if(in_array(1,$Sessao::getUsuario('permissoes'))){
+                ?>
                 <li><a href="<?=LINK?>usuario/listar">Usuário</a></li>
                 <li><a href="<?=LINK?>perfis/listar">Perfis</a></li>
+                <?php
+                }
+                ?>
+                <?php
+                if(in_array(2,$Sessao::getUsuario('permissoes'))){
+                ?>
+                <li><a href="<?=LINK?>auditoria/listar">Auditoria</a></li>
+                <?php
+                }
+                ?>
             </ul>
             <li title="<?=$Sessao::getUsuario("cargo")?>"><a class="dropdown-trigger" href="#!" data-target="dropdown1"><?=$Sessao::getUsuario("nome")?><i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="dropdown1" class="dropdown-content">

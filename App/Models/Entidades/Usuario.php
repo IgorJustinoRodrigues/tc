@@ -5,7 +5,7 @@ namespace App\Models\Entidades;
 class Usuario{
     const TABELA = 'usuario';
     const CAMPOS = ['id', 'nome', 'foto', 'email', 'fone', 'endereco', 'bairro', 'cidade', 'cargo', 'senha', 'ultimaSenha', 'token', 'status', 'cadastro', 'tipo_usuario_id'];
-    const OBRIGATORIO = ['nome', 'email', 'cargo', 'senha', 'status', 'cadastro', 'tipo_usuario_id'];
+    const OBRIGATORIO = ['nome', 'email', 'cargo', 'status', 'tipo_usuario_id'];
     
     private $id;
     private $nome;

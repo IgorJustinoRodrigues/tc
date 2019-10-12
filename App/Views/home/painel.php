@@ -41,40 +41,40 @@
     </div>
 </div>
 <div class="row">
+    <?php
+    if(in_array(2,$Sessao::getUsuario('permissoes'))){
+    ?>
+    <input type="hidden" id="pagina" value="1">
     <div class="col s12 l4">
         <h4 class="center">Auditoria</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Descrição</th>
-                    <th></th>
-                </tr>
-            </thead>
+        <div id="msg" class="center-align"></div>
+        <div  style="max-height: 350px;overflow:auto;">
+            <table id="tabela">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <?php
-                foreach ($viewVar['auditoria'] as $item){
-                ?>
-                <tr>
-                    <td><?=$this->tipo($item['tipo'])?></td>
-                    <td class="descricao"><?=$item['descricao']?></td>
-                    <td><a class="modal-trigger" href="#ver-auditoria"><i class="material-icons">open_in_new</i></a></td>
-                </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn blue right" id="buscar" onclick="listar()">Buscar</a>
     </div>
+    <?php
+    }
+    ?>
 </div>
-<!-- Modal Structure -->
-  <div id="ver-auditoria" class="modal">
+
+<div id="ver-auditoria" class="modal">
     <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
+        <h4>Detalhes de Auditoria</h4>
+        <div id="info-modal"> </div>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
     </div>
-  </div>    
+</div>    

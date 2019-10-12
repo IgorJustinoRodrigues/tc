@@ -78,11 +78,21 @@ class UsuarioController extends Controller{
                     Sessao::limpaFormulario();
                     Sessao::gravaMensagem("Cadastrado com sucesso!");
                     
+                    unset($dados['senha']);
+                    $dados['status'] = $this->status($dados['status']);
+                    
+                    $tipo = $bo->selecionarVetor(TipoUsuario::TABELA, ['descricao'], 1, null, "id = ?", [$dados['tipo_usuario_id']], null);
+
+                    $dados['tipo_usuario'] = $tipo['descricao'];
+                    unset($dados['tipo_usuario_id']);
+                    
+                    $dados['cadastro'] = date('d/m/Y às H:i:s');
+    
                     $info = [
                         'tipo' => 1,
                         'tabela' => Usuario::TABELA,
                         'campos' => $dados,
-                        'descricao' => 'O usuario [nome], efetuou o cadastro de um novo usuário no sistema.'
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou o cadastro de um novo usuário no sistema.'
                     ];
 
                     $this->inserirAuditoria($info);
@@ -93,6 +103,20 @@ class UsuarioController extends Controller{
                 $dados = array();
                 $campos = Usuario::CAMPOS;
 
+                if(trim($vetor['senha']) != ''){
+                    if(trim($vetor['senha']) == trim($vetor['senha2'])){
+                        unset($vetor['senha2']);
+                        $vetor['senha'] = md5($vetor['senha']);
+                    } else {
+                        Sessao::gravaFormulario($vetor);
+                        Sessao::gravaMensagem("Senhas não conferem!");
+                        $this->redirect('usuario/visualizar/'.$vetor['id']);
+                    }
+                } else {
+                    unset($vetor['senha']);
+                    unset($vetor['senha2']);
+                }
+                
                 foreach ($vetor as $indice => $valor) {
                     if(in_array($indice, $campos)){
                         if ($vetor[$indice] == '') {
@@ -102,7 +126,7 @@ class UsuarioController extends Controller{
                         }
                     }
                 }
-                
+
                 $validacao = Usuario::OBRIGATORIO;
                 $condicao = "id = ?";
                 $valorCondicao = [$vetor['id']];
@@ -115,8 +139,28 @@ class UsuarioController extends Controller{
 
                     $this->redirect('usuario/visualizar/'.$vetor['id']);
                 }else{               
+                    unset($dados['senha']);
+                    $dados['status'] = $this->status($dados['status']);
+                    
+                    $tipo = $bo->selecionarVetor(TipoUsuario::TABELA, ['descricao'], 1, null, "id = ?", [$dados['tipo_usuario_id']], null);
+
+                    $dados['tipo_usuario'] = $tipo['descricao'];
+                    unset($dados['tipo_usuario_id']);
+                    
+                    $dados['cadastro'] = date('d/m/Y às H:i:s');
+    
+                    $info = [
+                        'tipo' => 2,
+                        'tabela' => Usuario::TABELA,
+                        'campos' => $dados,
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a edição de um usuário no sistema.'
+                    ];
+
+                    $this->inserirAuditoria($info);
+
                     $mensagem = "Usuário " . $vetor['nome'] . " alterado";
                     Sessao::gravaMensagem($mensagem);
+                    Sessao::limpaFormulario();
 
                     $this->redirect('usuario/visualizar/'.$vetor['id']);
                 }  
@@ -226,7 +270,7 @@ class UsuarioController extends Controller{
                 $this->redirect('usuario/listar');
             }else{
                 $bo = new TipoUsuarioBO();
-                $tipo_usuario = $bo->listarVetor(TipoUsuario::TABELA, ['*'], null, null, "status = ?", [1], 'descricao');
+                $tipo_usuario = $bo->listarVetor(TipoUsuario::TABELA, ['*'], null, null, "", [], 'descricao');
                 $this->setViewParam('tipo_usuario', $tipo_usuario);
 
                 $mensagem = "Dados de " . $usuario->getNome();
