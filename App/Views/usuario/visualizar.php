@@ -23,18 +23,31 @@
                             <input id="cargo" type="text" name="cargo" class="validate" value="<?=$viewVar['usuario']->getCargo()?>" disabled required>
                             <label for="cargo">Cargo*</label>
                         </div>
+                        <?php
+                        if(in_array(1,$Sessao::getUsuario('permissoes'))){
+                        ?>
                         <div class="input-field col s12 m6">
                             <select id="tipo_usuario_id" name="tipo_usuario_id" required>
                                 <?php
                                 foreach ($viewVar['tipo_usuario'] as $item){
                                 ?>
-                                <option value="<?=$item['id']?>" <?=$viewVar['usuario']->getTipo_usuario() == $item['id'] ? 'selected' : ''?>><?=$item['descricao']?></option>
+                                <option value="<?=$item['id']?>" <?=$viewVar['usuario']->getTipo_usuario_id() == $item['id'] ? 'selected' : ''?>><?=$item['descricao']?></option>
                                 <?php
                                 }
                                 ?>
                             </select>
                             <label for="tipo_usuario_id">Tipo de usuário*</label>
                         </div>
+                        <?php
+                            } else {
+                        ?>
+                        <div class="input-field col s12 m6">
+                            <label for="tipo_usuario_id">Tipo de usuário*</label>
+                            <input type="text" class="form-control" value="<?=$Sessao::getUsuario("tipo_usuario")?>" disabled readonly>
+                        </div>
+                        <?php
+                            }
+                        ?>
                         <div class="input-field col s12 m6">
                             <input type="password" class="form-control" id="senha" name="senha" disabled>
                             <label for="senha">Alterar senha</label>
@@ -59,14 +72,13 @@
                             <div class="switch">
                                 <label>
                                     Desativado
-                                    <input type="checkbox" name="status" class="validate" <?=$viewVar['usuario']->getStatus() == "off" ? "":"checked"?> disabled>
+                                    <input type="checkbox" name="status" class="validate" <?=$viewVar['usuario']->getStatus() == "2" ? "":"checked"?> disabled>
                                     <span class="lever"></span>
                                     Ativo
                                 </label>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <a class="btn red texto-branco hide" href="<?=LINK?>usuario/visualizar/<?=$viewVar['usuario']->getId()?>" id="cancelar">Cancelar</a> &nbsp;
                         <button type="submit" class="btn green hide" id="salvar">Salvar</button>
@@ -79,7 +91,17 @@
         <li>
             <div class="collapsible-header"><i class="material-icons">more_horiz</i>Excluir</div>
             <div class="collapsible-body">
-                <a class="btn red texto-branco" onclick="confirmacao('<h6>Excluir o usuario <?=$viewVar['usuario']->getNome()?>?</h6><br>Todos os registros relacionados a ele serão perdidos.', 'usuario/excluir/<?=$viewVar['usuario']->getId()?>')">Excluir</a>
+                <?php
+                if($Sessao::getUsuario('id') == $viewVar['usuario']->getId()){
+                ?>
+                <a class="btn red texto-branco" onclick="confirmacao('<h6>Excluir sua conta <?=$viewVar['usuario']->getNome()?>?</h6><br>Você não terá mais acesso a sua conta.', 'usuario/excluir/<?=$viewVar['usuario']->getId()?>')">Excluir</a>
+                <?php
+                } else {
+                ?>
+                <a class="btn red texto-branco" onclick="confirmacao('<h6>Excluir o usuario <?=$viewVar['usuario']->getNome()?>?</h6><br>Todos os registros relacionados a ele serão perdidos.', 'usuario/excluir/<?=$viewVar['usuario']->getId()?>')">Excluir</a>                
+                <?php
+                }
+                ?>
             </div>
         </li>
     </ul>

@@ -4,24 +4,23 @@ namespace App\Models\Entidades;
 
 class Usuario{
     const TABELA = 'usuario';
-    const CAMPOS = ['id', 'nome', 'foto', 'email', 'fone', 'endereco', 'bairro', 'cidade', 'cargo', 'senha', 'ultimaSenha', 'token', 'status', 'cadastro', 'tipo_usuario_id'];
+    const CAMPOS = ['id', 'nome', 'email', 'fone', 'endereco', 'bairro', 'cidade', 'cargo', 'ultimaSenha', 'senha', 'token', 'status', 'cadastro', 'tipo_usuario_id'];
     const OBRIGATORIO = ['nome', 'email', 'cargo', 'status', 'tipo_usuario_id'];
     
     private $id;
     private $nome;
-    private $foto;
     private $email;
     private $fone;
     private $endereco;
     private $bairro;
     private $cidade;
     private $cargo;
-    private $senha;
     private $ultimaSenha;
+    private $senha;
     private $token;
     private $status;
     private $cadastro;
-    private $tipo_usuario;
+    private $tipo_usuario_id;
     
     public function __construct($dados = null) {
         if ($dados != null) {
@@ -37,10 +36,6 @@ class Usuario{
 
     function getNome() {
         return $this->nome;
-    }
-
-    function getFoto() {
-        return $this->foto;
     }
 
     function getEmail() {
@@ -87,8 +82,8 @@ class Usuario{
         return $this->cadastro;
     }
 
-    function getTipo_usuario() {
-        return $this->tipo_usuario;
+    function getTipo_usuario_id() {
+        return $this->tipo_usuario_id;
     }
 
     function setId($id) {
@@ -97,10 +92,6 @@ class Usuario{
 
     function setNome($nome) {
         $this->nome = $nome;
-    }
-
-    function setFoto($foto) {
-        $this->foto = $foto;
     }
 
     function setEmail($email) {
@@ -147,7 +138,7 @@ class Usuario{
         $this->cadastro = $cadastro;
     }
 
-    function setTipo_usuario($tipo_usuario) {
-        $this->tipo_usuario = $tipo_usuario;
+    function setTipo_usuario_id($tipo_usuario) {
+        $this->tipo_usuario_id = $tipo_usuario;
     }
 }

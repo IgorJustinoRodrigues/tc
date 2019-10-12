@@ -48,7 +48,7 @@
             <ul id="dropdown1" class="dropdown-content">
                 <li><a href="<?=LINK?>usuario/sair">SAIR</a></li>
                 <li class="divider"></li>
-                <li><a href="<?=LINK?>usuario/meusDados">Meus dados</a></li>
+                <li><a href="<?=LINK?>usuario/visualizar/<?=$Sessao::getUsuario("id")?>">Meus dados</a></li>
                 <li><a><?=$Sessao::getUsuario("tipo_usuario")?></a></li>
             </ul>
             <?php

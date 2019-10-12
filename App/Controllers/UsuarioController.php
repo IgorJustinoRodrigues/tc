@@ -31,11 +31,16 @@ class UsuarioController extends Controller{
 
     public function salvar(){
         $this->validaUsuario();
-        $this->nivelAcesso(1);
+        $vetor = $_POST;
+        
+        if(!is_numeric($_POST['id']) and $_POST['id'] != Sessao::getUsuario('id')){
+            $this->nivelAcesso(1);
+        } else {
+            $vetor['tipo_usuario_id'] = Sessao::getUsuario('tipo_usuario_id');
+        }
         
         if($_POST){
             $bo = new UsuarioBO();
-            $vetor = $_POST;
             
             if(!is_numeric($vetor['id'])){
                 Sessao::gravaFormulario($_POST);
@@ -106,7 +111,10 @@ class UsuarioController extends Controller{
                 if(trim($vetor['senha']) != ''){
                     if(trim($vetor['senha']) == trim($vetor['senha2'])){
                         unset($vetor['senha2']);
-                        $vetor['senha'] = md5($vetor['senha']);
+                        $vetor['ultimaSenha'] = '&&senha';
+                        $senha = md5($vetor['senha']);
+                        unset($vetor['senha']);
+                        $vetor['senha'] = $senha;
                     } else {
                         Sessao::gravaFormulario($vetor);
                         Sessao::gravaMensagem("Senhas não conferem!");
@@ -126,13 +134,19 @@ class UsuarioController extends Controller{
                         }
                     }
                 }
+                
+                if($dados['status'] == "on"){
+                    $dados['status'] = 1;
+                } else {
+                    $dados['status'] = 2;
+                }
 
                 $validacao = Usuario::OBRIGATORIO;
                 $condicao = "id = ?";
                 $valorCondicao = [$vetor['id']];
-                
+
                 $resposta = $bo->update(Usuario::TABELA, $dados, $condicao, $valorCondicao, 1, $validacao);
-                
+
                 if(!$resposta){
                     $mensagem = "Usuário sem alteração";
                     Sessao::gravaMensagem($mensagem);
@@ -245,9 +259,11 @@ class UsuarioController extends Controller{
 
     public function visualizar($parametro) {
         $this->validaUsuario();
-        $this->nivelAcesso(1);
-       
         $id = $parametro[0];
+        
+        if($id != Sessao::getUsuario('id')){
+            $this->nivelAcesso(1);
+        }
 
         if(is_numeric($id)){
             $bo = new UsuarioBO();
@@ -302,6 +318,7 @@ class UsuarioController extends Controller{
             'tipo' => 6,
             'tabela' => Usuario::TABELA,
             'campos' => array(),
+            
             'descricao' => 'O usuario [nome], saiu do sistema.'
         ];
 
@@ -338,6 +355,14 @@ class UsuarioController extends Controller{
                 $usuario = $bo->selecionarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy);
 
                 if($usuario){
+                    if($usuario['status'] == 2){
+                        Sessao::gravaMensagem('O usuário ' . $usuario['nome'] . ', está inativo.<br>Contate um administrador do sistema.');
+                        $this->redirect('usuario/login');                
+                    } else if($usuario['status'] == 0){
+                        Sessao::gravaMensagem('Nome e/ou senha incorreto.');
+                        $this->redirect('usuario/login');                        
+                    }
+                    
                     $tipoUsuarioPermissaoBO = new TipoUsuarioPermissaoBO();
                     $tipoPermissoes = $tipoUsuarioPermissaoBO->listarVetor(TipoUsuarioPermissao::TABELA . ' tup inner join ' . Permissao::TABELA . ' p on tup.permissao_id = p.id', ['p.nivel'], null, null, "tup.tipo_usuario_id = ? and p.status = 1 GROUP BY p.nivel", [$usuario['tipo_usuario_id']], 'p.nivel');                    
 
@@ -380,4 +405,68 @@ class UsuarioController extends Controller{
             $this->redirect('usuario/login');
         }
     }
+    
+    public function excluir(){
+        $this->validaUsuario();
+        
+        if(is_numeric($_POST['id'])){
+        
+            if($_POST['id'] != Sessao::getUsuario('id')){
+                $this->nivelAcesso(1);
+            }
+
+            $dados = [
+                'status' => 0
+            ];
+
+            $bo = new UsuarioBO();
+            $condicao = "id = ?";
+            $valorCondicao = [$_POST['id']];
+
+            $resposta = $bo->update(Usuario::TABELA, $dados, $condicao, $valorCondicao, 1, []);
+
+            if(!$resposta){
+                $mensagem = "Usuário sem alteração";
+                Sessao::gravaMensagem($mensagem);
+
+                $this->redirect('usuario/visualizar/'.$_POST['id']);
+            }else{               
+
+                if($_POST['id'] != Sessao::getUsuario('id')){
+                    $info = [
+                        'tipo' => 2,
+                        'tabela' => Usuario::TABELA,
+                        'campos' => $dados,
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a edição de um usuário no sistema.'
+                    ];
+                } else {
+                    $info = [
+                        'tipo' => 4,
+                        'tabela' => Usuario::TABELA,
+                        'campos' => ['Status' => 'Excluido'],
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a sua exclusão no sistema.'
+                    ];
+                }
+                
+                $this->inserirAuditoria($info);
+
+                if($_POST['id'] != Sessao::getUsuario('id')){
+                    $mensagem = "Usuário " . $vetor['nome'] . " excluido";
+                    Sessao::gravaMensagem($mensagem);
+                    Sessao::limpaFormulario();
+
+                    $this->redirect('usuario/visualizar/'.$vetor['id']);
+                } else {
+                    $this->redirect('usuario/sair');
+                }
+            }
+
+        } else {
+           
+            Sessao::gravaMensagem("Acesso Incorreto!");
+            $this->redirect('usuario/visualizar/'.$_POST['id']);
+
+       }
+    }
+    
 }

@@ -176,13 +176,13 @@ abstract class BaseDAO{
                 } else {
                     $sql .= ', ';
                 }
-                if($value != "null"){
+                if($value != "null" and strpos($value, '&&') !== 0){
                     $sql .= "`" . $key . "` = '" . $value . "'";
                 } else {
-                    $sql .= "`" . $key . "` = " . $value;
+                    $sql .= "`" . $key . "` = " . str_replace("&&", "", $value);
                 }
             }
-            
+
             $sql .= " WHERE ";
 
             $array = str_split($condicao);
