@@ -5,9 +5,16 @@
         </a>
         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down margem">
-            <li><a href="<?=$Sessao::logado() ? LINK . 'home/painel' : LINK?>">INÍCIO</a></li>
+            <li><a href="<?=$Sessao::logado() ? LINK . 'home/painel' : LINK?>">Início</a></li>
             <?php
             if($Sessao::logado()){
+            ?>
+            <?php
+            if(in_array(4,$Sessao::getUsuario('permissoes')) or in_array(5,$Sessao::getUsuario('permissoes'))){
+            ?>
+            <li><a href="<?=$Sessao::logado() ? LINK . 'registro/entrada' : LINK?>">Nova Entrada</a></li>
+            <?php
+            }
             ?>
             <li><a class="dropdown-trigger" href="#!" data-target="relatorio">Relatorio<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="relatorio" class="dropdown-content">

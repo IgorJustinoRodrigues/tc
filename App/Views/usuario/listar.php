@@ -27,7 +27,10 @@
    <table class="table responsive-table highlight">
         <thead>
             <tr>
-                <th scope="col" style="width: 95%">Nome</th>
+                <th scope="col" style="width: 30%">Nome</th>
+                <th scope="col" style="width: 35%">E-mail</th>
+                <th scope="col" style="width: 20%">Cargo</th>
+                <th scope="col" style="width: 10%">Status</th>
                 <th scope="col" style="width: 5%">Ver</th>
             </tr>
         </thead>
@@ -37,6 +40,9 @@
             ?>
             <tr>
                 <td><?=$usuario->getNome()?></td>
+                <td><?=$usuario->getEmail()?></td>
+                <td><?=$usuario->getCargo()?></td>
+                <td><?=$this->status($usuario->getStatus())?></td>
                 <td>
                     <a href="<?=LINK?>usuario/visualizar/<?=$usuario->getId()?>"><i class="material-icons green-text">open_in_new</i></a>
                 </td>

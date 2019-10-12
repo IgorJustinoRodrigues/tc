@@ -1,20 +1,25 @@
 <br>
-<style>
-    
-</style>
 <div class="row">
+    <?php
+    if(in_array(1,$Sessao::getUsuario('permissoes'))){
+    ?>
     <div class="col s12 m6 l4">
-        <div class="blue card" style="width: 100%; height: 100px;">
-            <div class="row">
-                <div class="col s2 m3 l3">
-                    <i class="large material-icons white-text" style="margin-top: 8px">assignment_ind</i>            
-                </div>
-                <div class="col s10 m7 l9">
-                    <h4 class="white-text">134 Usuários</h4>
+        <a href="<?=LINK?>usuario/listar">
+            <div class="blue card" style="width: 100%; height: 100px;">
+                <div class="row">
+                    <div class="col s2 m3 l3">
+                        <i class="large material-icons white-text" style="margin-top: 8px">assignment_ind</i>            
+                    </div>
+                    <div class="col s10 m7 l9">
+                        <h4 class="white-text"><?=$viewVar['quant_usuario']?> Usuário<?=$viewVar['quant_usuario'] > 1 ? 's' : ''?></h4>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
+    <?php
+    }
+    ?>
     <div class="col s12 m6 l4">
         <div class="blue card" style="width: 100%; height: 100px;">
             <div class="row">

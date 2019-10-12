@@ -204,11 +204,11 @@ class UsuarioController extends Controller{
         $quantidade = 5;
         $pagina = $p * $quantidade - $quantidade;
         
-        $condicao = "";
-        $valoresCondicao = [];
+        $condicao = "status != ?";
+        $valoresCondicao = [0];
 
         if($busca){
-            $condicao .= "nome like '%?%' ";
+            $condicao .= " and nome like '%?%' ";
             array_push($valoresCondicao, "$busca");
         }
         
@@ -406,12 +406,14 @@ class UsuarioController extends Controller{
         }
     }
     
-    public function excluir(){
+    public function excluir($parametros){
         $this->validaUsuario();
         
-        if(is_numeric($_POST['id'])){
+        $id = $parametros[0];
+ 
+        if(is_numeric($id)){
         
-            if($_POST['id'] != Sessao::getUsuario('id')){
+            if($id != Sessao::getUsuario('id')){
                 $this->nivelAcesso(1);
             }
 
@@ -421,23 +423,23 @@ class UsuarioController extends Controller{
 
             $bo = new UsuarioBO();
             $condicao = "id = ?";
-            $valorCondicao = [$_POST['id']];
+            $valorCondicao = [$id];
 
             $resposta = $bo->update(Usuario::TABELA, $dados, $condicao, $valorCondicao, 1, []);
 
             if(!$resposta){
-                $mensagem = "Usuário sem alteração";
+                $mensagem = "Falha ao excluir usuário";
                 Sessao::gravaMensagem($mensagem);
 
-                $this->redirect('usuario/visualizar/'.$_POST['id']);
+                $this->redirect('usuario/visualizar/'.$id);
             }else{               
 
-                if($_POST['id'] != Sessao::getUsuario('id')){
+                if($id != Sessao::getUsuario('id')){
                     $info = [
-                        'tipo' => 2,
+                        'tipo' => 4,
                         'tabela' => Usuario::TABELA,
-                        'campos' => $dados,
-                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a edição de um usuário no sistema.'
+                        'campos' => ['Status' => 'Excluido'],
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a exclusão de um usuário no sistema.'
                     ];
                 } else {
                     $info = [
@@ -450,12 +452,12 @@ class UsuarioController extends Controller{
                 
                 $this->inserirAuditoria($info);
 
-                if($_POST['id'] != Sessao::getUsuario('id')){
+                if($id != Sessao::getUsuario('id')){
                     $mensagem = "Usuário " . $vetor['nome'] . " excluido";
                     Sessao::gravaMensagem($mensagem);
                     Sessao::limpaFormulario();
 
-                    $this->redirect('usuario/visualizar/'.$vetor['id']);
+                    $this->redirect('usuario/listar/');
                 } else {
                     $this->redirect('usuario/sair');
                 }
@@ -469,4 +471,57 @@ class UsuarioController extends Controller{
        }
     }
     
+    public function esqueciSenha() {
+        if(Sessao::logado()){
+            $mensagem = "O " . Sessao::getUsuario('cargo') . " " . Sessao::getUsuario('nome') . ", está logado no sistema!<br>Você não é o(a) " . Sessao::getUsuario('nome') . '? <a href="'.LINK.'usuario/sair" class="btn yellow white-text">Sair!</a>';
+            Sessao::gravaMensagem($mensagem);
+
+            $this->redirect('home/painel');
+        }
+        $this->render('usuario/esqueciSenha');
+   
+    }
+    
+    public function verificarEmail() {
+        $email = $_POST['email'];
+        
+        if(trim($email) != ''){
+            $token = $email . rand(10000, 999999) . date('d-m-y-h-s-i');
+            $token = md5($token);
+
+            $bo = new UsuarioBO();
+            $tabela = Usuario::TABELA;
+            $dados = [
+                'token' => $token
+            ];
+
+            $condicao = "email = '?' and status = ?";
+            $valorCondicao = [$email, 1];
+            
+            $resultado = $bo->update($tabela, $dados, $condicao, $valorCondicao, 1, []);
+            
+            if($resultado){
+                $arquivo = "Código de recuperação: ".$token;
+                $emailenviar = $email;
+                $destino = $emailenviar;
+                $assunto = "Código de alteração de senha";
+
+                // É necessário indicar que o formato do e-mail é html
+                $headers  = 'MIME-Version: 1.0' . "\r\n";
+                    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+                    $headers .= 'From: Sistema de Gestão <$email>';
+                //$headers .= "Bcc: $EmailPadrao\r\n";
+
+                $enviaremail = mail($destino, $assunto, $arquivo, $headers);
+                if($enviaremail){
+                    echo 'sim';
+                } else {
+                    echo 'não';
+                }
+            }
+        } else {
+            Sessao::gravaMensagem('Acesso incorreto!');
+            $this->redirect('usuario/login');
+        }
+    }
 }

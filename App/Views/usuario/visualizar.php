@@ -1,5 +1,10 @@
 <div class="container">
     <h3><?=$viewVar['usuario']->getNome()?></h3>
+    <?php
+    if($viewVar['usuario']->getStatus() == 0){
+        echo '<div class="card-panel red darken-1 white-text center-align"><h5>Usuário excluido!</h5></div>';
+    }
+    ?>
     <ul class="collapsible">
         <li class="active">
             <div class="collapsible-header"><i class="material-icons">search</i>Informações</div>

@@ -6,7 +6,7 @@ use App\Models\BO\RegistroBO;
 use App\Models\Entidades\Registro;
 
 class RegistroController extends Controller{
-    public function index(){
-        $this->render('registro/index');
+    public function entrada(){
+        $this->render('registro/entrada');
     }
 }

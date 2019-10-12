@@ -11,9 +11,13 @@
                     <input id="senha" type="password" name="senha" class="validate" required>
                     <label for="senha">Senha</label>
                 </div>
-                <button class="btn waves-effect waves-light black right col s12 m4" style="margin-bottom: 10px" type="submit">Acessar
+                <div class="input-field col s12">
+                    <a href="<?=LINK?>usuario/esqueciSenha" style="margin-top: -30px;" class="right">Esqueci a senha!</a>
+                </div>
+                <br>
+                <button class="btn waves-effect waves-light blue right col s12 m4" style="margin-bottom: 10px" type="submit">Acessar
                 </button>
-                <a href="<?=LINK?>" class="btn waves-effect waves-light blue col s12 m4" type="submit">Voltar
+                <a href="<?=LINK?>" class="btn waves-effect waves-light black col s12 m4" type="submit">Voltar
                 </a>
             </div>
         </form>
