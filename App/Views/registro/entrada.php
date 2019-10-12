@@ -77,8 +77,8 @@
 
                 <tbody>
                     <tr>
-                        <td class="center-align">asdf</td>
-                        <td class="center-align">asdf</td>
+                        <td class="center-align" style="font-size: 30px">ABC-1234</td>
+                        <td class="center-align" style="font-size: 30px">12/10 15:38</td>
                         <td class="center-align">
                             <a onclick="confirmar_saida_registro(1)" class="waves-effect waves-light btn green hvr-grow"><i class="material-icons">done</i></a>
                             <a onclick="ver_registro_campus(1)" class="waves-effect waves-light btn blue hvr-grow"><i class="material-icons">search</i></a>
