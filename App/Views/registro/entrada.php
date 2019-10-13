@@ -33,7 +33,7 @@
 
 <div class="row">
     <div class="col s12 l6">
-        <form class="container" action="<?=LINK?>registro/salvar" method="POST">
+        <div class="container">
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">more</i>
@@ -51,7 +51,7 @@
             <div class="row">
                 <div class="input-field col s12">
                 <i class="material-icons prefix">verified_user</i>
-                <select name="motivo" required>
+                <select name="motivo" id="motivo" required>
                     <option value="1">Aula</option>
                         <option value="2">Passeio</option>
                         <option value="3">Trazer Aluno</option>
@@ -60,9 +60,9 @@
                 </div>
             </div>
             <div class="row">
-                <button type="submit" class="btn col s12 green">Cadastrar Nova Entrada</button>
+                <a onclick="novaEntrada()" class="btn col s12 green">Cadastrar Nova Entrada</a>
             </div>
-        </form>
+        </div>
     </div>
     <div class="col s12 l6">
         <div  style="max-height: 350px;overflow:auto;">

@@ -10,7 +10,7 @@
             if($Sessao::logado()){
             ?>
             <?php
-            if(in_array(4,$Sessao::getUsuario('permissoes')) or in_array(5,$Sessao::getUsuario('permissoes'))){
+            if(in_array(4,$Sessao::getUsuario('permissoes'))){
             ?>
             <li><a href="<?=$Sessao::logado() ? LINK . 'registro/entrada' : LINK?>">Nova Entrada</a></li>
             <?php

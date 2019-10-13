@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS tc;
 CREATE SCHEMA IF NOT EXISTS `tc` DEFAULT CHARACTER SET utf8 ;
 USE `tc` ;
 
@@ -8,11 +9,10 @@ CREATE TABLE IF NOT EXISTS `tc`.`tipo_usuario` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 CREATE TABLE IF NOT EXISTS `tc`.`usuario` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(100) NOT NULL,
-  `email` VARCHAR(200) NOT NULL ,
+  `email` VARCHAR(200) NOT NULL,
   `fone` VARCHAR(16) NULL DEFAULT NULL,
   `endereco` VARCHAR(200) NULL DEFAULT NULL,
   `bairro` VARCHAR(100) NULL DEFAULT NULL,
@@ -22,19 +22,18 @@ CREATE TABLE IF NOT EXISTS `tc`.`usuario` (
   `ultimaSenha` VARCHAR(32) NULL DEFAULT NULL,
   `token` VARCHAR(32) NULL DEFAULT NULL,
   `status` INT(2) NOT NULL,
-  `cadastro` DATETIME NOT NULL DEFAULT now(),
+  `cadastro` DATETIME NOT NULL,
   `tipo_usuario_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `tipo_usuario_id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
-  INDEX `fk_usuario_tipo_usuario_idx` (`tipo_usuario_id` ASC),
-  CONSTRAINT `fk_usuario_tipo_usuario`
+  INDEX `fk_usuario_tipo_usuario1_idx` (`tipo_usuario_id` ASC),
+  CONSTRAINT `fk_usuario_tipo_usuario1`
     FOREIGN KEY (`tipo_usuario_id`)
     REFERENCES `tc`.`tipo_usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 CREATE TABLE IF NOT EXISTS `tc`.`auditoria` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -54,7 +53,6 @@ CREATE TABLE IF NOT EXISTS `tc`.`auditoria` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 CREATE TABLE IF NOT EXISTS `tc`.`permissao` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `descricao` VARCHAR(50) NOT NULL,
@@ -63,7 +61,6 @@ CREATE TABLE IF NOT EXISTS `tc`.`permissao` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 CREATE TABLE IF NOT EXISTS `tc`.`veiculo` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -78,10 +75,9 @@ CREATE TABLE IF NOT EXISTS `tc`.`veiculo` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 CREATE TABLE IF NOT EXISTS `tc`.`registro` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `tipo_usuario_id` INT(11) NOT NULL,
+  `usuario_id` INT(11) NOT NULL,
   `veiculo_id` INT(11) NOT NULL,
   `entrada` DATETIME NOT NULL,
   `saida` DATETIME NULL DEFAULT NULL,
@@ -91,20 +87,19 @@ CREATE TABLE IF NOT EXISTS `tc`.`registro` (
   `status` INT(1) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_usuario_has_veiculo_veiculo1_idx` (`veiculo_id` ASC),
-  INDEX `fk_usuario_has_veiculo_usuario1_idx` (`id` ASC, `tipo_usuario_id` ASC),
-  CONSTRAINT `fk_usuario_has_veiculo_usuario1`
-    FOREIGN KEY (`id` , `tipo_usuario_id`)
-    REFERENCES `tc`.`usuario` (`id` , `tipo_usuario_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_registro_usuario1_idx` (`usuario_id` ASC),
   CONSTRAINT `fk_usuario_has_veiculo_veiculo1`
     FOREIGN KEY (`veiculo_id`)
     REFERENCES `tc`.`veiculo` (`id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_registro_usuario1`
+    FOREIGN KEY (`usuario_id`)
+    REFERENCES `tc`.`usuario` (`id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 CREATE TABLE IF NOT EXISTS `tc`.`tipo_usuario_permissao` (
   `tipo_usuario_id` INT(11) NOT NULL,
@@ -128,6 +123,7 @@ DEFAULT CHARACTER SET = utf8;
 INSERT INTO `tc`.`permissao` (`descricao`, `nivel`, `status`) VALUES ('Gerenciar Usuários', '1', '1');
 INSERT INTO `tc`.`permissao` (`descricao`, `nivel`, `status`) VALUES ('Gerenciar Auditoria', '2', '1');
 INSERT INTO `tc`.`permissao` (`descricao`, `nivel`, `status`) VALUES ('Gerenciar Veículos', '3', '1');
+INSERT INTO `tc`.`permissao` (`descricao`, `nivel`, `status`) VALUES ('Gerenciar Entradas e Saídas', '4', '1');
 
 INSERT INTO `tc`.`tipo_usuario` (`descricao`) VALUES ('Administrador');
 INSERT INTO `tc`.`tipo_usuario` (`descricao`) VALUES ('Gerente');

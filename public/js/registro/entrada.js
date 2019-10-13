@@ -135,7 +135,36 @@ function confirmar_saida_registro(id){
                 
             }
         }
-    });    
+    });
+}
+
+function novaEntrada(){
+    var placa = $("#placa").val();
+    var condutor = $("#condutor").val();
+    var motivo = $("#motivo option:selected").val();
+    
+    if(placa !== ''){
+        $.ajax({
+            type: 'post',
+            dataType:'json',
+            url: $("#link").val() + 'registro/novaEntrada',
+            data: {placa:placa, condutor:condutor, motivo:motivo},
+            beforeSend: function() {
+                $("#msgModal").html("<h5>Registrando nova entrada...</h5>");
+            },
+            success: function(retorno){
+                if(retorno.status === '1'){
+                    alert(retorno.msg);
+                } else {
+                    alert(retorno.msg);
+                }
+            }
+        });
+        
+    } else {
+        M.toast({html: 'Informe a placa!'})
+        $("#placa").focus();
+    }
 }
 
  $(document).ready(function(){
