@@ -17,9 +17,6 @@ class HomeController extends Controller{
         $quant_usuario = $usuarioBO->selecionarVetor(Usuario::TABELA, ['count(id) as quant_usuario'], null, null, "status != ?", [0], null);
         $this->setViewParam('quant_usuario', $quant_usuario['quant_usuario']);
         
-        $lista = $this->exibirAuditoria(5);
-        $this->setViewParam('auditoria', $lista);
-        
         $this->render('home/painel', "Meu painel");
     }
     

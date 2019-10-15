@@ -4,11 +4,11 @@ namespace App\Models\Entidades;
 
 class Registro{
     const TABELA = 'registro';
-    const CAMPOS = ['id', 'tipo_usuario_id', 'veiculo_id', 'entrada', 'saida', 'condutor', 'motivo', 'descricao', 'status'];
-    const OBRIGATORIO = ['tipo_usuario_id', 'veiculo_id', 'entrada', 'status'];
+    const CAMPOS = ['id', 'usuario_id', 'veiculo_id', 'entrada', 'saida', 'condutor', 'motivo', 'descricao', 'status'];
+    const OBRIGATORIO = ['usuario_id', 'veiculo_id', 'entrada', 'status'];
     
     private $id;
-    private $tipo_usuario_id;
+    private $usuario_id;
     private $veiculo_id;
     private $entrada;
     private $saida;
@@ -29,8 +29,8 @@ class Registro{
         return $this->id;
     }
 
-    function getTipo_usuario_id() {
-        return $this->tipo_usuario_id;
+    function getUsuario_id() {
+        return $this->usuario_id;
     }
 
     function getVeiculo_id() {
@@ -65,8 +65,8 @@ class Registro{
         $this->id = $id;
     }
 
-    function setTipo_usuario_id($tipo_usuario_id) {
-        $this->tipo_usuario_id = $tipo_usuario_id;
+    function setUsuario_id($usuario_id) {
+        $this->usuario_id = $usuario_id;
     }
 
     function setVeiculo_id($veiculo_id) {

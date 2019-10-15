@@ -31,7 +31,8 @@ function listar(){
                 }
                 
                 $("#pagina").val(parseInt(pagina) + 1);
-                if(lista.length<5){
+                
+                if(lista.length < 5 && pagina > 1){
                     $("#buscar").addClass('hide');
                     M.toast({html: 'Sem mais registros de auditoria...'});
                 }

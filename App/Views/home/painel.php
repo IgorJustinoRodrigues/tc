@@ -24,7 +24,7 @@
         <div class="blue card" style="width: 100%; height: 100px;">
             <div class="row">
                 <div class="col s2 m3 l3">
-                    <i class="large material-icons white-text">directions_car</i>            
+                    <i class="large material-icons white-text">directions_car</i>
                 </div>
                 <div class="col s10 m7 l9">
                     <h4 class="white-text">134 Veículos</h4>
@@ -46,9 +46,6 @@
     </div>
 </div>
 <div class="row">
-    <?php
-    if(in_array(2,$Sessao::getUsuario('permissoes'))){
-    ?>
     <input type="hidden" id="pagina" value="1">
     <div class="col s12 l4">
         <h4 class="center">Auditoria</h4>
@@ -69,9 +66,6 @@
         </div>
         <a class="btn blue right" id="buscar" onclick="listar()">Buscar</a>
     </div>
-    <?php
-    }
-    ?>
 </div>
 
 <div id="ver-auditoria" class="modal">

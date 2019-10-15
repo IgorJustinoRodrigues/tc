@@ -99,7 +99,12 @@ abstract class BaseDAO{
                 } else {
                     $sql .= ', ';
                 }
-                $sql .= $value;
+
+                if(strpos($value, '&&') !== 0){
+                    $sql .= $value;
+                } else {
+                    $sql .= str_replace("&&", "", $value);
+                }
             }
             $sql .= " FROM ";
             $sql .= $tabela;

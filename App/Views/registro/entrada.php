@@ -13,8 +13,8 @@
         <div class="blue card" style="width: 100%; height: 140px;">
             <div class="row">
                 <div class="col s12 center-align">
-                    <h2 class="white-text" style="margin-top: 30px" id="quant_carros">26</h2>
-                    <h5 class="white-text" style="margin-top: -25px">Carros no campus</h5>
+                    <h2 class="white-text" style="margin-top: 30px" id="quant_carros"></h2>
+                    <h5 class="white-text" style="margin-top: -25px">Veículos no campus</h5>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="blue card" style="width: 100%; height: 140px;">
             <div class="row">
                 <div class="col s12 center-align">
-                    <h2 class="white-text" style="margin-top: 30px" id="quant_registros">84</h2>
+                    <h2 class="white-text" style="margin-top: 30px" id="quant_registros"></h2>
                     <h5 class="white-text" style="margin-top: -25px">Registros hoje</h5>
                 </div>
             </div>
@@ -66,6 +66,7 @@
     </div>
     <div class="col s12 l6">
         <div  style="max-height: 350px;overflow:auto;">
+            <div id='msg'></div>
             <table id="tabela" class="striped">
                 <thead>
                     <tr class="blue white-text">
@@ -75,26 +76,15 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                        <td class="center-align" style="font-size: 30px">ABC-1234</td>
-                        <td class="center-align" style="font-size: 30px">12/10 15:38</td>
-                        <td class="center-align">
-                            <a onclick="confirmar_saida_registro(1)" class="waves-effect waves-light btn green hvr-grow"><i class="material-icons">done</i></a>
-                            <a onclick="ver_registro_campus(1)" class="waves-effect waves-light btn blue hvr-grow"><i class="material-icons">search</i></a>
-                            <a onclick="cancelar_registro(1)" class="waves-effect waves-light btn red hvr-grow"><i class="material-icons">delete_sweep</i></a>
-                        </td>
-                    </tr>
-                </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<div id="ver-registro-campus" class="modal">
+<div id="ver-registro-campus" class="modal ver_registro_campus">
     <div class="modal-content">
         <h4>Detalhes de Registro</h4>
-        <div id="info-modal"> </div>
+        <div id="info_modal_ver"></div>
     </div>
     <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
@@ -104,7 +94,7 @@
 <div id="cancelar-registro" class="modal">
     <div class="modal-content">
         <h4>Cancelar Registro</h4>
-        <div id="info-modal"> </div>
+        <div id="info-modal-cancelar"></div>
     </div>
     <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>

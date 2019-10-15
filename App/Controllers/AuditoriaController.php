@@ -15,8 +15,15 @@ class AuditoriaController extends Controller{
         $quantidade = 5;
         $p = is_numeric($_POST['pagina']) ? $_POST['pagina'] : 1;
         $pagina = $p * $quantidade - $quantidade;
-        $condicao = "";
-        $valorCondicao = [];
+        
+        if(in_array(2,Sessao::getUsuario('permissoes'))){
+            $condicao = '';
+            $valorCondicao = [];
+        } else {
+            $condicao = 'usuario_id = ?';
+            $valorCondicao = [Sessao::getUsuario('id')];            
+        }
+
         $orderBy = "id desc";
         $debug = null;
 

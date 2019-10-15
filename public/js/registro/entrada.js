@@ -53,7 +53,7 @@ function Horario(){
 window.setInterval("Horario()",1000);
 
 function ver_registro_campus(id){
-    var instance = M.Modal.getInstance($('#ver-registro-campus'));
+    var instance = M.Modal.getInstance($('.ver_registro_campus'));
     instance.open();
     
     $.ajax({
@@ -62,87 +62,97 @@ function ver_registro_campus(id){
         url: $("#link").val() + 'registro/verRegistro',
         data: {id:id},
         beforeSend: function () {            
-            $("#info-modal").html("<h5>Buscando...</h5>");
+            $("#info_modal_ver").html("<h5>Buscando...</h5>");
         },
-        success: function(auditoria){
-            if(auditoria){
-                var html = "<h6><b>Tipo:</b> "+auditoria.tipo+"</h6>";
-                html += "<h6><b>Usuário:</b> <a target='_blank' href='"+$("#link").val()+"usuario/visualizar/"+auditoria.usuario_id+"'>"+auditoria.nome+"</a></h6>";
-                html += "<h6><b>Cargo:</b> "+auditoria.cargo+"</h6>";
-                html += "<h6><b>Descrição:</b> "+auditoria.descricao+"</h6><br>";
-                if(auditoria.tabela != ''){
-                    html += "<h6><b>Tabela:</b> "+auditoria.tabela+"</h6>";
-                }
-                var campos = jQuery.parseJSON(auditoria.campos);
-                if(auditoria.campos != '[]'){
-                    html += "<h6><b>Campos:</b></h6>";
-                    for (var key in campos) {
-                        if(campos[key] == 'null'){
-                            html += "<p style='margin-left: 30px'><b>"+key+":</b> -</p>";
-                        } else {
-                            html += "<p style='margin-left: 30px'><b>"+key+":</b> "+campos[key]+"</p>";                            
-                        }
+        success: function(registro){
+            if(registro){
+                var html = "<h6><b>Entrada:</b> "+registro.entrada+"</h6>";
+                    if(registro.condutor != ''){
+                        html += "<h6><b>Condutor do veículo:</b> "+registro.condutor+"</h6>";
                     }
-                }
-                html += "<h6><b>Data:</b> "+auditoria.data+"</h6>";
+                    html += "<h6><b>Motivo da entrada:</b> "+registro.motivo+"</h6>";
+                    if(registro.descricao != null){
+                        html += "<h6><b>Descrição do registro:</b> "+registro.descricao+"</h6>";
+                    }
+                    if(registro.status != null){
+                        html += "<h6><b>Status do registro:</b> "+registro.status+"</h6>";
+                    }
+                    if(registro.tipo != null){
+                        html += "<h6><b>Tipo do veículo:</b> "+registro.tipo+"</h6>";
+                    }
+                    if(registro.tipo != null){
+                        html += "<h6><b>Modelo do veículo:</b> "+registro.modelo+"</h6>";
+                    }
+                    html += "<h6><b>Placa do veículo:</b> "+registro.placa+"</h6>";
+                    if(registro.cidadePlaca != null){
+                        html += "<h6><b>Cidade da placa:</b> "+registro.cidadePlaca+"</h6>";
+                    }
+                    if(registro.cor != null){
+                        html += "<h6><b>Cor do veículo:</b> "+registro.cor+"</h6>";
+                    }
+                    if(registro.observacoes != null){
+                        html += "<h6><b>Observações do veículo:</b> "+registro.observacoes+"</h6>";
+                    }
+                    html += "<h6><b>Data de cadastro do veículo:</b> "+registro.cadastro+"</h6>";
                 
-                $("#info-modal").html(html);
+                $("#info_modal_ver").html(html);
             } else {
-                
+                $("#info_modal_ver").html("Registro não encontrado!");                
             }
         }
     });    
 }
 
+
 function cancelar_registro(id){
-    var instance = M.Modal.getInstance($('#cancelar-registro'));
-    instance.open();
-    
-    $.ajax({
-        type: 'post',
-        dataType:'json',
-        url: $("#link").val() + 'registro/cancelarRegistro',
-        data: {id:id},
-        beforeSend: function () {            
-            $("#info-modal").html("<h5>Cancelando...</h5>");
-        },
-        success: function(auditoria){
-            if(auditoria){
-                
-            } else {
-                
+    if(confirm("Cancelar entrada?")){
+
+        $.ajax({
+            type: 'post',
+            dataType:'json',
+            url: $("#link").val() + 'registro/cancelarRegistro',
+            data: {id:id},
+            success: function(resposta){
+                if(resposta.status == '1'){            
+                    M.toast({html: resposta.msg});
+                } else {
+
+                }
             }
-        }
-    });    
+        });    
+    }
 }
 
 function confirmar_saida_registro(id){
-    var instance = M.Modal.getInstance($('#confirmar-saida-registro'));
-    instance.open();
-    
-    $.ajax({
-        type: 'post',
-        dataType:'json',
-        url: $("#link").val() + 'registro/confirmarSaidaRegistro',
-        data: {id:id},
-        beforeSend: function () {            
-            $("#info-modal").html("<h5>Finalizando...</h5>");
-        },
-        success: function(auditoria){
-            if(auditoria){
-                
-            } else {
-                
+    if(confirm("Confirmar saída?")){
+
+        $.ajax({
+            type: 'post',
+            dataType:'json',
+            url: $("#link").val() + 'registro/confirmarSaidaRegistro',
+            data: {id:id},
+            success: function(resposta){
+                if(resposta.status == '1'){            
+                    M.toast({html: resposta.msg});
+                } else {
+
+                }
             }
-        }
-    });
+        });    
+    }
 }
+
+$(document).keypress(function(e) {
+    if(e.which == 13){
+        novaEntrada();
+    }
+});    
 
 function novaEntrada(){
     var placa = $("#placa").val();
     var condutor = $("#condutor").val();
     var motivo = $("#motivo option:selected").val();
-    
+
     if(placa !== ''){
         $.ajax({
             type: 'post',
@@ -153,29 +163,72 @@ function novaEntrada(){
                 $("#msgModal").html("<h5>Registrando nova entrada...</h5>");
             },
             success: function(retorno){
-                if(retorno.status === '1'){
-                    alert(retorno.msg);
+                if(retorno.status == '1'){
+                    $("#placa").val("");
+                    $("#condutor").val("");
+                    M.toast({html: retorno.msg});
                 } else {
-                    alert(retorno.msg);
+                    M.toast({html: retorno.msg});
                 }
             }
         });
-        
+
     } else {
         M.toast({html: 'Informe a placa!'})
         $("#placa").focus();
     }
 }
 
- $(document).ready(function(){
+$(document).ready(function(){
     $('input.autocomplete').autocomplete({
-      data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
-      },
+        data: {
+            "Apple": null,
+            "Microsoft": null,
+            "Google": 'https://placehold.it/250x250'
+        },
     });
-    
+
     var instance = M.Autocomplete.getInstance($('input.autocomplete'));
     instance.open();
-  });
+});
+
+listar()
+window.setInterval("listar()",2000);
+
+function listar(){
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/listarRegistrosAcesso',//Definindo o arquivo onde serão buscados os dados
+        success: function(lista){
+            $("#msg").text("");
+                $(".tr").remove();
+            if(lista['registro'].length>0){
+                $("#quant_carros").text(lista['registro'].length);
+                $("#quant_registros").text(lista['totalHoje']);
+
+                for(var i=0;lista['registro'].length>i;i++){
+                    var newRow = $("<tr class='tr'>");
+                    var cols = "";
+                        
+                    cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].placa+'</td>';
+                    cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].entrada+'</td>';                           
+                    cols += '<td class="center-align">'
+                    cols += '<a onclick="confirmar_saida_registro('+lista['registro'][i].id+')" class="waves-effect waves-light btn green hvr-grow"><i class="material-icons">done</i></a>';
+                    cols += '<a onclick="ver_registro_campus('+lista['registro'][i].id+')" class="waves-effect waves-light btn blue hvr-grow"><i class="material-icons">search</i></a>';
+                    cols += '<a onclick="cancelar_registro('+lista['registro'][i].id+')" class="waves-effect waves-light btn red hvr-grow"><i class="material-icons">delete_sweep</i></a>';
+                    cols +='</td>';
+
+                    newRow.append(cols);	    
+
+                    $("#tabela").append(newRow);
+                }
+    
+            } else {
+                $("#quant_carros").text(0);
+                $("#quant_registros").text(lista['totalHoje']);
+                $("#msg").text("Sem entradas!");
+            }
+        }
+    });
+}

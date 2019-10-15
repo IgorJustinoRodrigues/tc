@@ -166,22 +166,6 @@ abstract class Controller{
         $bo->inserir($tabela, $dados, $validacao);
     }
     
-    public function exibirAuditoria($quantidade, $pagina = 0){
-        $bo = new \App\Models\BO\AuditoriaBO();
-        $tabela = \App\Models\Entidades\Auditoria::TABELA;
-        
-        $lista = $bo->listarVetor($tabela, ['*'], $quantidade, $pagina, "", [], "id desc");
-
-        for($i = 0; $i < count($lista); $i++){
-            $usuario = $bo->selecionarVetor(\App\Models\Entidades\Usuario::TABELA, \App\Models\Entidades\Usuario::CAMPOS, 1, null, 'id = ?', [$lista[$i]['usuario_id']], null);
-           
-            $novafrase = str_replace(\App\Models\Entidades\Usuario::CAMPOS, $usuario, $lista[$i]['descricao']);
-            
-            $lista[$i]['descricao'] = $novafrase;
-        }
-        return $lista;
-    }
-    
     public function atualizar_dados_usuario_sessao() {
         $bo = new \App\Models\BO\UsuarioBO;
 
