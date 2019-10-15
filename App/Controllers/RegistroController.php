@@ -142,6 +142,8 @@ class RegistroController extends Controller{
                     echo json_encode($retorno);                                
 
                     exit();
+                } else {
+                    $veiculo_id_inserido = $veiculo_id;
                 }
             }
 
@@ -163,7 +165,7 @@ class RegistroController extends Controller{
                 $retorno = [
                     "status" => 1,
                     "msg" => "Registro inserido!",
-                    "veiculo_id" => $veiculo_id
+                    "veiculo_id" => $veiculo_id_inserido
                 ];
             } else {
                 $retorno = [

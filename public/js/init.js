@@ -13,7 +13,9 @@ $(document).ready(function(){
 
 $('.cpf').mask('000.000.000-00');
 $('.telefone').mask('(00) 0 0000-0000');
-$('.placa').mask('AAA-0000');
+$('.placa').mask('SSS-0000',{
+    'S': {pattern: /[A-Z]/}
+});
 
 function confirmacao(descricao, link){
     $("#confirmacao_descricao").html(descricao);
