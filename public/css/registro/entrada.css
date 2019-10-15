@@ -1,0 +1,12 @@
+.btn-large i {
+    font-size: 5.6rem;
+}
+
+.btn-large {
+    height: 80px;
+    padding: 15px 28px;
+}
+
+.btn-tipo:hover{
+    background-color: #0c429c !important;
+}

@@ -37,14 +37,14 @@
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">more</i>
-                <input type="text" id="placa" class="autocomplete placa" style="font-size: 40px; text-transform: uppercase" required>
+                <input type="text" id="placa" class="autocomplete placa" style="font-size: 40px; text-transform: uppercase" required autocomplete="off" onkeypress ="autoComplete()">
                 <label for="placa">Placa</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">person_pin</i>
-                <input type="text" id="condutor" style="font-size: 40px; text-transform: uppercase" required>
+                <input type="text" id="condutor" style="font-size: 40px; text-transform: uppercase" required >
                 <label for="condutor">Condutor</label>
               </div>
             </div>
@@ -52,9 +52,13 @@
                 <div class="input-field col s12">
                 <i class="material-icons prefix">verified_user</i>
                 <select name="motivo" id="motivo" required>
-                    <option value="1">Aula</option>
-                        <option value="2">Passeio</option>
-                        <option value="3">Trazer Aluno</option>
+                    <option value="1">Não informado</option>
+                        <option value="2">Aluno(a)</option>
+                        <option value="3">Transporte escolar</option>
+                        <option value="4">Professor(a)</option>
+                        <option value="5">Responsável por aluno</option>
+                        <option value="6">Visita</option>
+                        <option value="7">Evento</option>
                     </select>
                     <label for="motivo">Motivo</label>
                 </div>
@@ -114,7 +118,9 @@
 <div class="modal informacoes_veiculo">
     <div class="modal-content">
         <h4>Informações do veículo</h4>
-        <div id="info_modal_info_veiculo"></div>
+        <div class='row' id="tipo_usuario_btn"></div>
+        <br>
+        <div class='row' id="info_modal_info_veiculo"></div>
     </div>
     <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>

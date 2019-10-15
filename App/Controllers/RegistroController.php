@@ -15,6 +15,29 @@ class RegistroController extends Controller{
         $this->render('registro/entrada');
     }
     
+    public function listarAutoComplete() {
+        $bo = new RegistroBO();
+
+        $tabela = Veiculo::TABELA;
+        $campos = ['*', 'date_format(cadastro, "%d/%m/%Y %H:%i:%s") as cadastro'];
+        $quantidade = null;
+        $pagina = null;
+
+        $condicao = '';
+        $valorCondicao = [];
+
+        $orderBy = "placa";
+        $debug = null;
+
+        $registro = $bo->listarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
+        $placas = [];
+        foreach ($registro as $item){
+            $placas[$item['placa']] = null;
+        }
+        
+        echo json_encode($placas);                
+    }
+    
     public function listarRegistrosAcesso() {
         $bo = new RegistroBO();
         
@@ -139,7 +162,8 @@ class RegistroController extends Controller{
             if($id){
                 $retorno = [
                     "status" => 1,
-                    "msg" => "Registro inserido!"
+                    "msg" => "Registro inserido!",
+                    "veiculo_id" => $veiculo_id
                 ];
             } else {
                 $retorno = [
@@ -230,7 +254,7 @@ class RegistroController extends Controller{
             $bo = new RegistroBO();
 
             $tabela = Registro::TABELA . ' r inner join ' . Veiculo::TABELA . ' v on r.veiculo_id = v.id';
-            $campos = ['*', 'r.id', 'date_format(r.entrada, "%d/%m/%Y %H:%i:%s") as entrada', 'date_format(v.cadastro, "%d/%m/%Y %H:%i:%s") as cadastro', '&&case when status = 2 then "Presente" else "Outros" end as status', '&&case when motivo = 1 then "Aula" when motivo = 2 then "Passeio" else "Trazer Aluno" end as motivo'];
+            $campos = ['*', 'r.id', 'date_format(r.entrada, "%d/%m/%Y %H:%i:%s") as entrada', 'date_format(v.cadastro, "%d/%m/%Y %H:%i:%s") as cadastro', '&&case when status = 2 then "Presente" else "Outros" end as status', '&&case when motivo = 1 then "Não informado" when motivo = 2 then "Aluno(a)" when motivo = 3 then "Transporte escolar" when motivo = 4 then "Professor(a)" when motivo = 5 then "Responsável por aluno" when motivo = 6 then "Visita" else "Evento" end as motivo', '&&case when tipo = 1 then "Motocicleta" when tipo = 2 then "Carros"  when tipo = 3 then "Van/Ônibus" else "Outros" end as tipo'];
             $quantidade = 1;
             $pagina = null;
 
@@ -253,7 +277,7 @@ class RegistroController extends Controller{
             $bo = new RegistroBO();
 
             $tabela = Veiculo::TABELA;
-            $campos = ['*', 'date_format(cadastro, "%d/%m/%Y %H:%i:%s") as cadastro'];
+            $campos = ['*', 'date_format(cadastro, "%d/%m/%Y %H:%i:%s") as cadastro', '&&case when isnull(modelo) then "" else modelo end as modelo', '&&case when isnull(cor) then "" else cor end as cor', '&&case when isnull(cidadePlaca) then "" else cidadePlaca end as cidadePlaca', '&&case when isnull(observacoes) then "" else observacoes end as observacoes'];
             $quantidade = 1;
             $pagina = null;
 
@@ -261,7 +285,7 @@ class RegistroController extends Controller{
             $valorCondicao = [$_POST['id']];
 
             $orderBy = "";
-            $debug = null;
+            $debug = false;
 
             $registro = $bo->selecionarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
         } else {
@@ -269,5 +293,43 @@ class RegistroController extends Controller{
         }
 
         echo json_encode($registro);        
+    }
+    
+    public function atualizarDadosVeiculo() {
+        if($_POST['campo'] != '' and $_POST['valor'] != '' and is_numeric($_POST['id'])){
+            $bo = new RegistroBO();
+            $tabela = Veiculo::TABELA;
+
+            $dados = [
+                $_POST['campo'] => $_POST['valor']
+            ];
+
+            $condicao = "id = ?";
+            $valorCondicao = [$_POST['id']];
+            $quantidade = 1;
+            $validacao = [];
+            
+            $resposta = $bo->update($tabela, $dados, $condicao, $valorCondicao, $quantidade, $validacao);
+            
+            if($resposta){
+                $retorno = [
+                    "status" => 1,
+                    "msg" => "Alteração salva!"
+                ];            
+            } else {
+                $retorno = [
+                    "status" => 0,
+                    "msg" => "Falha ao concluir alteração!"
+                ];                            
+            }
+        } else {
+            $retorno = [
+                "status" => 0,
+                "msg" => "Acesso incorreto!"
+            ];            
+        }
+
+        echo json_encode($retorno); 
+   
     }
 }

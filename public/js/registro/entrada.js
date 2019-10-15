@@ -80,7 +80,7 @@ function ver_registro_campus(id){
                     if(registro.tipo != null){
                         html += "<h6><b>Tipo do veículo:</b> "+registro.tipo+"</h6>";
                     }
-                    if(registro.tipo != null){
+                    if(registro.modelo != null){
                         html += "<h6><b>Modelo do veículo:</b> "+registro.modelo+"</h6>";
                     }
                     html += "<h6><b>Placa do veículo:</b> <a onclick='informacoes_veiculo("+registro.veiculo_id+")'>"+registro.placa+"</a></h6>";
@@ -102,7 +102,6 @@ function ver_registro_campus(id){
         }
     });    
 }
-
 
 function cancelar_registro(id){
     if(confirm("Cancelar entrada?")){
@@ -166,6 +165,9 @@ function novaEntrada(){
                 if(retorno.status == '1'){
                     $("#placa").val("");
                     $("#condutor").val("");
+                    if(retorno.veiculo_id){
+                        informacoes_veiculo(retorno.veiculo_id);
+                    }
                     M.toast({html: retorno.msg});
                 } else {
                     M.toast({html: retorno.msg});
@@ -180,26 +182,41 @@ function novaEntrada(){
 }
 
 $(document).ready(function(){
-    $('input.autocomplete').autocomplete({
-        data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'https://placehold.it/250x250'
-        },
-    });
+    $('input.autocomplete').autocomplete({});
 
     var instance = M.Autocomplete.getInstance($('input.autocomplete'));
     instance.open();
 });
 
 listar()
-window.setInterval("listar()",2000);
+listarAutoComplete();
+window.setInterval("listar()", 1000);
+window.setInterval("listarAutoComplete()",10000);
+
+function listarAutoComplete(){
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/listarAutoComplete',
+        success: function(lista){        
+            var instance = M.Autocomplete.getInstance($('input.autocomplete'));
+
+            instance.updateData(lista);
+        }
+    });
+}
+
+function autoComplete(){
+    var instance = M.Autocomplete.getInstance($('input.autocomplete'));
+    instance.close();
+    instance.open();
+}
 
 function listar(){
     $.ajax({
         type: 'post',
         dataType:'json',
-        url: $("#link").val() + 'registro/listarRegistrosAcesso',//Definindo o arquivo onde serão buscados os dados
+        url: $("#link").val() + 'registro/listarRegistrosAcesso',
         success: function(lista){
             $("#msg").text("");
                 $(".tr").remove();
@@ -212,7 +229,7 @@ function listar(){
                     var cols = "";
                         
                     cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].placa+'</td>';
-                    cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].entrada+'</td>';                           
+                    cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].entrada+'</td>';   
                     cols += '<td class="center-align">'
                     cols += '<a onclick="confirmar_saida_registro('+lista['registro'][i].id+')" class="waves-effect waves-light btn green hvr-grow"><i class="material-icons">done</i></a>';
                     cols += '<a onclick="ver_registro_campus('+lista['registro'][i].id+')" class="waves-effect waves-light btn blue hvr-grow"><i class="material-icons">search</i></a>';
@@ -247,14 +264,95 @@ function informacoes_veiculo(id){
         },
         success: function(registro){
             if(registro){
-                var html = "<h6><b>Tipo:</b> "+registro.tipo+"</h6>";
-                    html += "<h6><b>Data de cadastro do veículo:</b> "+registro.cadastro+"</h6>";
+                var html = "<div class='col s12 m3'><a class='btn-large btn-tipo' style='background-color: ";
+                    if(registro.tipo == '1'){
+                        html += '#0c429c';
+                    } else {
+                        html += '#0088f5';                        
+                    }
+                    html += "' onclick='atualizarDadosVeiculo(";
+                    html += '"tipo", 1, ' + registro.id;
+                    html += ")'><i class='material-icons'>motorcycle</i></a><p class='center-align'>Motocicleta</p></div>";
+
+                    html += "<div class='col s12 m3'><a class='btn-large btn-tipo' style='background-color: ";
+                    if(registro.tipo == '2'){
+                        html += '#0c429c';
+                    } else {
+                        html += '#0088f5';                        
+                    }
+                    html += "' onclick='atualizarDadosVeiculo(";
+                    html += '"tipo", 2, ' + registro.id;
+                    html += ")'><i class='material-icons'>directions_car</i></a><p class='center-align'>Carros</p></div>";
+
+                    html += "<div class='col s12 m3'><a class='btn-large btn-tipo' style='background-color: ";
+                    if(registro.tipo == '3'){
+                        html += '#0c429c';
+                    } else {
+                        html += '#0088f5';                        
+                    }
+                    html += "' onclick='atualizarDadosVeiculo(";
+                    html += '"tipo", 3, ' + registro.id;
+                    html += ")'><i class='material-icons'>directions_bus</i></a><p class='center-align'>Van/Ônibus</p></div>";
+
+                    html += "<div class='col s12 m3'><a class='btn-large btn-tipo' style='background-color: ";
+                    if(registro.tipo == '4'){
+                        html += '#0c429c';
+                    } else {
+                        html += '#0088f5';                        
+                    }
+                    html += "' onclick='atualizarDadosVeiculo(";
+                    html += '"tipo", 4, ' + registro.id;
+                    html += ")'><i class='material-icons'>traffic</i></a><p class='center-align'>Outros</p></div>";
                 
-                $("#info_modal_info_veiculo").html(html);
+                $("#tipo_usuario_btn").html(html);
+                
+                var html2 = '<div class="input-field col s12 m6"><i class="material-icons prefix">grade</i><input type="text" id="modelo" value="'+registro.modelo+'" onblur="atualizarDadosVeiculo(';
+                    html2 += "'modelo', ";
+                    html2 += "'', " + registro.id;
+                    html2 += ')"><label class="active" for="modelo">Modelo</label></div>';
+
+                    html2 += '<div class="input-field col s12 m6"><i class="material-icons prefix">color_lens</i><input type="text" id="cor" value="'+registro.cor+'" onblur="atualizarDadosVeiculo(';
+                    html2 += "'cor', ";
+                    html2 += "'', " + registro.id;
+                    html2 += ')"><label class="active" for="cor">Cor</label></div>';
+
+                    html2 += '<div class="input-field col s12 m6"><i class="material-icons prefix">center_focus_weak</i><input type="text" id="placa" class="placa" value="'+registro.placa+'" disabled><label class="active" for="placa">Placa</label></div>';
+
+                    html2 += '<div class="input-field col s12 m6"><i class="material-icons prefix">location_on</i><input type="text" id="cidadePlaca" value="'+registro.cidadePlaca+'" onblur="atualizarDadosVeiculo(';
+                    html2 += "'cidadePlaca', ";
+                    html2 += "'', " + registro.id;
+                    html2 += ')"><label class="active" for="cidadePlaca">Cidade da Placa</label></div>';
+
+                    html2 += '<div class="input-field col s12"><i class="material-icons prefix">location_on</i><textarea id="observacoes" class="materialize-textarea" onblur="atualizarDadosVeiculo(';
+                    html2 += "'observacoes', ";
+                    html2 += "'', " + registro.id;
+                    html2 += ')">'+registro.observacoes+'</textarea><label class="active" for="observacoes">Observações</label></div>';
+
+                $("#info_modal_info_veiculo").html(html2);
             } else {
                 $("#info_modal_info_veiculo").html("Registro não encontrado!");                
             }
         }
-    });    
+    });        
+}
+
+function atualizarDadosVeiculo(campo, valor, id){
+    if(valor == ""){
+        valor = $("#"+campo).val();
+    }
     
+    var instance = M.Modal.getInstance($('.ver_registro_campus'));
+    instance.close();
+
+    
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/atualizarDadosVeiculo',
+        data: {campo:campo, valor:valor, id:id},
+        success: function(retorno){
+            M.toast({html: retorno.msg});
+            informacoes_veiculo(id);
+        }
+    });
 }
