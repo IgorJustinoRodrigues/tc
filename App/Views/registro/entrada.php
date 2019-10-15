@@ -110,3 +110,13 @@
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
     </div>
 </div>
+
+<div class="modal informacoes_veiculo">
+    <div class="modal-content">
+        <h4>Informações do veículo</h4>
+        <div id="info_modal_info_veiculo"></div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
+    </div>
+</div>

@@ -247,4 +247,27 @@ class RegistroController extends Controller{
 
         echo json_encode($registro);
     }
+    
+    function infoVeiculo() {
+        if($_POST['id']){
+            $bo = new RegistroBO();
+
+            $tabela = Veiculo::TABELA;
+            $campos = ['*', 'date_format(cadastro, "%d/%m/%Y %H:%i:%s") as cadastro'];
+            $quantidade = 1;
+            $pagina = null;
+
+            $condicao = 'id = ?';
+            $valorCondicao = [$_POST['id']];
+
+            $orderBy = "";
+            $debug = null;
+
+            $registro = $bo->selecionarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
+        } else {
+            $registro = [];
+        }
+
+        echo json_encode($registro);        
+    }
 }

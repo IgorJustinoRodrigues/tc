@@ -83,7 +83,7 @@ function ver_registro_campus(id){
                     if(registro.tipo != null){
                         html += "<h6><b>Modelo do veículo:</b> "+registro.modelo+"</h6>";
                     }
-                    html += "<h6><b>Placa do veículo:</b> "+registro.placa+"</h6>";
+                    html += "<h6><b>Placa do veículo:</b> <a onclick='informacoes_veiculo("+registro.veiculo_id+")'>"+registro.placa+"</a></h6>";
                     if(registro.cidadePlaca != null){
                         html += "<h6><b>Cidade da placa:</b> "+registro.cidadePlaca+"</h6>";
                     }
@@ -231,4 +231,30 @@ function listar(){
             }
         }
     });
+}
+
+function informacoes_veiculo(id){
+    var instance = M.Modal.getInstance($('.informacoes_veiculo'));
+    instance.open();
+    
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/infoVeiculo',
+        data: {id:id},
+        beforeSend: function () {            
+            $("#info_modal_info_veiculo").html("<h5>Buscando...</h5>");
+        },
+        success: function(registro){
+            if(registro){
+                var html = "<h6><b>Tipo:</b> "+registro.tipo+"</h6>";
+                    html += "<h6><b>Data de cadastro do veículo:</b> "+registro.cadastro+"</h6>";
+                
+                $("#info_modal_info_veiculo").html(html);
+            } else {
+                $("#info_modal_info_veiculo").html("Registro não encontrado!");                
+            }
+        }
+    });    
+    
 }
