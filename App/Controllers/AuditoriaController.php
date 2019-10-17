@@ -89,6 +89,18 @@ class AuditoriaController extends Controller{
                 return "Logoff";
                 break;
 
+            case 7:
+                return "Entrada de Veículo";
+                break;
+
+            case 8:
+                return "Saída de Veículo";
+                break;
+
+            case 9:
+                return "Cancelamento de Entrada";
+                break;
+
             default:
                 return "Outros";
                 break;

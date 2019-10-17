@@ -16,6 +16,9 @@ class RegistroController extends Controller{
     }
     
     public function listarAutoComplete() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         $bo = new RegistroBO();
 
         $tabela = Veiculo::TABELA;
@@ -39,10 +42,13 @@ class RegistroController extends Controller{
     }
     
     public function listarRegistrosAcesso() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         $bo = new RegistroBO();
         
         $tabela = Registro::TABELA . ' r inner join ' . Veiculo::TABELA . ' v on r.veiculo_id = v.id';
-        $campos = ['r.id', 'v.placa', 'date_format(r.entrada, "%d/%m %H:%i") as entrada'];
+        $campos = ['r.id', 'v.id as veiculo_id', 'v.placa', 'date_format(r.entrada, "%d/%m %H:%i") as entrada'];
         $quantidade = null;
         $pagina = null;
         
@@ -79,6 +85,7 @@ class RegistroController extends Controller{
     public function novaEntrada() {
         $this->validaUsuario();
         $this->nivelAcesso(4);
+
         $vetor = $_POST;
         
         if(trim($vetor['placa']) != ''){
@@ -98,7 +105,7 @@ class RegistroController extends Controller{
                 if($status){
                     $retorno = [
                         "status" => 0,
-                        "msg" => "O veiculo já se encontra no campos.<br>Impossível dar uma nova entrada!"
+                        "msg" => "O veiculo já se encontra no campus.<br>Impossível dar uma nova entrada!"
                     ];            
 
                     echo json_encode($retorno);                                
@@ -116,7 +123,7 @@ class RegistroController extends Controller{
                     $retorno = [
                         "status" => 0,
                         "msg" => "Formato da placa não é válido!"
-                    ];            
+                    ];
 
                     echo json_encode($retorno);                                
 
@@ -143,6 +150,15 @@ class RegistroController extends Controller{
 
                     exit();
                 } else {
+                    $info = [
+                        'tipo' => 1,
+                        'tabela' => Veiculo::TABELA,
+                        'campos' => $dados,
+                        'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou o cadastro de um novo veículo no sistema.'
+                    ];
+
+                    $this->inserirAuditoria($info);
+
                     $veiculo_id_inserido = $veiculo_id;
                 }
             }
@@ -162,6 +178,16 @@ class RegistroController extends Controller{
             $id = $bo->inserir($tabela, $dados, $validacao);
 
             if($id){
+                $info = [
+                    'tipo' => 7,
+                    'tabela' => Registro::TABELA,
+                    'campos' => $dados,
+                    'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou o cadastro de uma nova entrada no sistema.'
+                ];
+
+                $this->inserirAuditoria($info);
+
+                
                 $retorno = [
                     "status" => 1,
                     "msg" => "Registro inserido!",
@@ -184,6 +210,9 @@ class RegistroController extends Controller{
     }
         
     function cancelarRegistro() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         if($_POST['id']){
             $bo = new RegistroBO();
             $tabela = Registro::TABELA;
@@ -197,6 +226,15 @@ class RegistroController extends Controller{
             $resposta = $bo->update($tabela, $dados, $condicao, $valorCondicao, $quantidade, $validacao);
             
             if($resposta){
+                $info = [
+                    'tipo' => 9,
+                    'tabela' => Registro::TABELA,
+                    'campos' => $dados,
+                    'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou o cancelamento de uma entrada no sistema.'
+                ];
+
+                $this->inserirAuditoria($info);
+
                 $retorno = [
                     "status" => 1,
                     "msg" => "Entrada cancelada!"
@@ -218,11 +256,15 @@ class RegistroController extends Controller{
     }
         
     function confirmarSaidaRegistro() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         if($_POST['id']){
             $bo = new RegistroBO();
             $tabela = Registro::TABELA;
             $dados = [
-                'status' => 1
+                'status' => 1,
+                'saida' => date('Y-m-d H:i:s')
             ];
             $condicao = "id = ?";
             $valorCondicao = [$_POST['id']];
@@ -231,6 +273,15 @@ class RegistroController extends Controller{
             $resposta = $bo->update($tabela, $dados, $condicao, $valorCondicao, $quantidade, $validacao);
             
             if($resposta){
+                $info = [
+                    'tipo' => 8,
+                    'tabela' => Veiculo::TABELA,
+                    'campos' => $dados,
+                    'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a saída de um veículo no sistema.'
+                ];
+
+                $this->inserirAuditoria($info);
+
                 $retorno = [
                     "status" => 1,
                     "msg" => "Saída confirmada!"
@@ -252,11 +303,14 @@ class RegistroController extends Controller{
     }
     
     function verRegistro() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         if($_POST['id']){
             $bo = new RegistroBO();
 
             $tabela = Registro::TABELA . ' r inner join ' . Veiculo::TABELA . ' v on r.veiculo_id = v.id';
-            $campos = ['*', 'r.id', 'date_format(r.entrada, "%d/%m/%Y %H:%i:%s") as entrada', 'date_format(v.cadastro, "%d/%m/%Y %H:%i:%s") as cadastro', '&&case when status = 2 then "Presente" else "Outros" end as status', '&&case when motivo = 1 then "Não informado" when motivo = 2 then "Aluno(a)" when motivo = 3 then "Transporte escolar" when motivo = 4 then "Professor(a)" when motivo = 5 then "Responsável por aluno" when motivo = 6 then "Visita" else "Evento" end as motivo', '&&case when tipo = 1 then "Motocicleta" when tipo = 2 then "Carros"  when tipo = 3 then "Van/Ônibus" else "Outros" end as tipo'];
+            $campos = ['*', 'r.id', 'date_format(r.entrada, "%d/%m/%Y %H:%i:%s") as entrada', 'date_format(r.saida, "%d/%m/%Y %H:%i:%s") as saida', 'date_format(v.cadastro, "%d/%m/%Y %H:%i:%s") as cadastro', '&&case when status = 2 then "Presente" else "Outros" end as status', '&&case when motivo = 1 then "Não informado" when motivo = 2 then "Aluno(a)" when motivo = 3 then "Transporte escolar" when motivo = 4 then "Professor(a)" when motivo = 5 then "Responsável por aluno" when motivo = 6 then "Visita" else "Evento" end as motivo', '&&case when tipo = 1 then "Motocicleta" when tipo = 2 then "Carros"  when tipo = 3 then "Van/Ônibus" else "Outros" end as tipo'];
             $quantidade = 1;
             $pagina = null;
 
@@ -275,6 +329,9 @@ class RegistroController extends Controller{
     }
     
     function infoVeiculo() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         if($_POST['id']){
             $bo = new RegistroBO();
 
@@ -296,8 +353,39 @@ class RegistroController extends Controller{
 
         echo json_encode($registro);        
     }
+
+    public function listarGrafico() {
+        $this->validaUsuario();
+
+        $bo = new RegistroBO();
+
+        $tabela = registro::TABELA;
+        $campos = ['date_format(entrada, "%d/%m") as entrada'];
+        $quantidade = 7;
+        $pagina = null;
+
+        $condicao = 'status = ? or status = ?';
+        $valorCondicao = [1, 2];
+
+        $orderBy = "";
+        $debug = false;
+
+        $lista = $bo->listarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
+        $array = [];
+        
+        foreach ($lista as $item){
+            array_push($array, $item);
+        }
+        
+        $x["label"] = $array;
+        
+        echo json_encode($x);                
+    }
     
     public function atualizarDadosVeiculo() {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
         if($_POST['campo'] != '' and $_POST['valor'] != '' and is_numeric($_POST['id'])){
             $bo = new RegistroBO();
             $tabela = Veiculo::TABELA;
@@ -314,6 +402,16 @@ class RegistroController extends Controller{
             $resposta = $bo->update($tabela, $dados, $condicao, $valorCondicao, $quantidade, $validacao);
             
             if($resposta){
+                
+                $info = [
+                    'tipo' => 2,
+                    'tabela' => Veiculo::TABELA,
+                    'campos' => $dados,
+                    'descricao' => 'O '.Sessao::getUsuario('tipo_usuario').' [nome], efetuou a edição de um veículo no sistema.'
+                ];
+
+                $this->inserirAuditoria($info);
+
                 $retorno = [
                     "status" => 1,
                     "msg" => "Alteração salva!"
@@ -333,5 +431,40 @@ class RegistroController extends Controller{
 
         echo json_encode($retorno); 
    
+    }
+    
+    public function listar($param) {
+        $this->validaUsuario();
+        $this->nivelAcesso(4);
+
+        $bo = new RegistroBO();
+        
+        $tabela = Registro::TABELA . " r inner join " . Veiculo::TABELA . " v on r.veiculo_id = v.id";
+        $campos = ["v.*","r.*", "date_format(entrada, '%d/%m/%Y %H:%i') as entrada", "date_format(saida, '%d/%m/%Y %H:%i') as saida"];
+        
+        $busca = $param[0];
+        
+        if($busca == "todos"){
+            $condicao = "";
+            $valorCondicao = [];
+            $busca = "Todos os registros";
+        } else if($busca == "ultimo30"){
+            $condicao = "DATE(entrada) >= DATE_ADD(NOW(), INTERVAL -30 DAY)";
+            $valorCondicao = [];            
+            $busca = "Registros dos ultimos 30 dias";
+        } else if($busca == "ultimo7"){
+            $condicao = "DATE(entrada) >= DATE_ADD(NOW(), INTERVAL -7 DAY)";
+            $valorCondicao = [];            
+            $busca = "Registros dos ultimos 7 dias";
+        } else {
+            $condicao = "DATE(entrada) = DATE(now())";
+            $valorCondicao = [];
+            $busca = "Registros de hoje";
+        }
+        
+        $lista = $bo->listarVetor($tabela, $campos, null, null, $condicao, $valorCondicao, "r.id");
+        $this->setViewParam("busca", $busca);
+        $this->setViewParam("lista", $lista);
+        $this->render('registro/listar');
     }
 }

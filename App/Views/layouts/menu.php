@@ -18,9 +18,7 @@
             ?>
             <li><a class="dropdown-trigger" href="#!" data-target="relatorio">Relatorio<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="relatorio" class="dropdown-content">
-                <li><a href="<?=LINK?>relatorio/gerar/geral">Geral</a></li>
-                <li><a href="<?=LINK?>relatorio/gerar/usuario">Usuários</a></li>
-                <li><a href="<?=LINK?>relatorio/gerar/veiculos">Veiculos</a></li>
+                <li><a href="<?=LINK?>registro/listar">Entradas</a></li>
             </ul>
             <li><a class="dropdown-trigger" href="#!" data-target="cadastro">Cadastro<i class="material-icons right">arrow_drop_down</i></a></li>
             <ul id="cadastro" class="dropdown-content">

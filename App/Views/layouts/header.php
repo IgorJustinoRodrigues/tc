@@ -14,7 +14,7 @@
         <link href="<?=CSS?>/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
         <script src="<?=JS?>/jquery-3.2.1.js"></script>
         <script src="<?=JS?>/jquery.mask.js"></script>
-        <script src="<?=JS?>/nicEdit.js"></script>
+        <script src="<?=JS?>/Chart.min.js"></script>
         <?=$css?>
     </head>
 <body>

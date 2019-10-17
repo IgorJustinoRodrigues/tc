@@ -228,7 +228,7 @@ function listar(){
                     var newRow = $("<tr class='tr'>");
                     var cols = "";
                         
-                    cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].placa+'</td>';
+                    cols += '<td class="center-align" style="font-size: 30px"><a onclick="informacoes_veiculo('+lista['registro'][i].veiculo_id+')">'+lista["registro"][i].placa+'</td>';
                     cols += '<td class="center-align" style="font-size: 30px">'+lista['registro'][i].entrada+'</td>';   
                     cols += '<td class="center-align">'
                     cols += '<a onclick="confirmar_saida_registro('+lista['registro'][i].id+')" class="waves-effect waves-light btn green hvr-grow"><i class="material-icons">done</i></a>';

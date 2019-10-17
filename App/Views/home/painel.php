@@ -47,7 +47,7 @@
 </div>
 <div class="row">
     <input type="hidden" id="pagina" value="1">
-    <div class="col s12 l4">
+    <div class="col s12 l5">
         <h4 class="center">Auditoria</h4>
         <div id="msg" class="center-align"></div>
         <div  style="max-height: 350px;overflow:auto;">
@@ -65,6 +65,9 @@
             </table>
         </div>
         <a class="btn blue right" id="buscar" onclick="listar()">Buscar</a>
+    </div>
+    <div class="col s12 l7">
+        <canvas id="line-chart" width="800" height="450"></canvas>
     </div>
 </div>
 

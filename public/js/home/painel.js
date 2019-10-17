@@ -85,3 +85,36 @@ function ver(id){
         }
     });    
 }
+
+grafico();
+
+function grafico(){
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/listarGrafico',//Definindo o arquivo onde serão buscados os dados
+        success: function(dados){
+            if(dados){
+                new Chart(document.getElementById("line-chart"), {
+                type: 'line',
+                data: {
+                  labels: dados.label,
+                  datasets: [{ 
+                      data: [2],
+                      label: "Registros",
+                      borderColor: "#3e95cd",
+                      fill: false
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: 'Saídas confirmadas'
+                  }
+                }
+                });
+            }
+        }
+    });
+}
