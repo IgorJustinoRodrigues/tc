@@ -66,9 +66,15 @@
         </div>
         <a class="btn blue right" id="buscar" onclick="listar()">Buscar</a>
     </div>
+    <?php
+    if(in_array(4,$Sessao::getUsuario('permissoes'))){
+    ?>
     <div class="col s12 l7">
         <canvas id="line-chart" width="100%"></canvas>
     </div>
+    <?php
+    }
+    ?>
 </div>
 
 <div id="ver-auditoria" class="modal">
