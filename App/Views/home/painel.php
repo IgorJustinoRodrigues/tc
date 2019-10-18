@@ -67,7 +67,7 @@
         <a class="btn blue right" id="buscar" onclick="listar()">Buscar</a>
     </div>
     <div class="col s12 l7">
-        <canvas id="line-chart" width="800" height="450"></canvas>
+        <canvas id="line-chart" width="100%"></canvas>
     </div>
 </div>
 

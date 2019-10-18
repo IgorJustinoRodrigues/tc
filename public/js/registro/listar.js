@@ -167,3 +167,39 @@ function atualizarDadosVeiculo(campo, valor, id){
         }
     });
 }
+
+grafico();
+window.setInterval("grafico()",60000);
+
+function grafico(){
+    var quant = $("#quant").val();
+    $.ajax({
+        type: 'post',
+        dataType:'json',
+        url: $("#link").val() + 'registro/listarGrafico',//Definindo o arquivo onde serão buscados os dados
+        data: {quant:quant},
+        success: function(dados){
+            if(dados){
+                new Chart(document.getElementById("line-chart"), {
+                type: 'line',
+                data: {
+                  labels: dados.label,
+                  datasets: [{ 
+                      data: dados.total,
+                      label: "Registros",
+                      borderColor: "#3e95cd",
+                      fill: false
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: 'Saídas confirmadas'
+                  }
+                }
+                });
+            }
+        }
+    });
+}

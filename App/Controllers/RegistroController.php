@@ -360,24 +360,27 @@ class RegistroController extends Controller{
         $bo = new RegistroBO();
 
         $tabela = registro::TABELA;
-        $campos = ['date_format(entrada, "%d/%m") as entrada'];
-        $quantidade = 7;
+        $campos = ['date_format(entrada, "%d/%m/%y") as entrada', 'count(id) as total'];
+        $quantidade = is_numeric($_POST['quant']) ? $_POST['quant'] : null;
         $pagina = null;
 
-        $condicao = 'status = ? or status = ?';
+        $condicao = 'status = ? or status = ? group by DATE_FORMAT(entrada, "%d-%m-%Y")';
         $valorCondicao = [1, 2];
 
-        $orderBy = "";
+        $orderBy = 'date(entrada) desc';
         $debug = false;
 
         $lista = $bo->listarVetor($tabela, $campos, $quantidade, $pagina, $condicao, $valorCondicao, $orderBy, $debug);
         $array = [];
+        $array2 = [];
         
-        foreach ($lista as $item){
-            array_push($array, $item);
+        for($i = count($lista) - 1; $i >= 0; $i--){
+            array_push($array2, $lista[$i]['total']);
+            array_push($array, $lista[$i]['entrada']);
         }
         
         $x["label"] = $array;
+        $x["total"] = $array2;
         
         echo json_encode($x);                
     }
@@ -448,18 +451,22 @@ class RegistroController extends Controller{
             $condicao = "";
             $valorCondicao = [];
             $busca = "Todos os registros";
+            $this->setViewParam("quant", 0);
         } else if($busca == "ultimo30"){
             $condicao = "DATE(entrada) >= DATE_ADD(NOW(), INTERVAL -30 DAY)";
             $valorCondicao = [];            
             $busca = "Registros dos ultimos 30 dias";
+            $this->setViewParam("quant", 30);
         } else if($busca == "ultimo7"){
             $condicao = "DATE(entrada) >= DATE_ADD(NOW(), INTERVAL -7 DAY)";
             $valorCondicao = [];            
             $busca = "Registros dos ultimos 7 dias";
+            $this->setViewParam("quant", 7);
         } else {
             $condicao = "DATE(entrada) = DATE(now())";
             $valorCondicao = [];
             $busca = "Registros de hoje";
+            $this->setViewParam("quant", 3);
         }
         
         $lista = $bo->listarVetor($tabela, $campos, null, null, $condicao, $valorCondicao, "r.id");

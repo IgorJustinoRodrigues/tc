@@ -1,4 +1,5 @@
 <div class="container">
+    <input type="hidden" id="quant" value="<?=$viewVar['quant']?>"/>
     <div class="row">
         <h3><?=count($viewVar['lista'])?> Registros</h3>
         <h5><?=$viewVar['busca']?></h5>
@@ -10,7 +11,10 @@
     <?php
     if (count($viewVar['lista']) > 0){
     ?>
-   <table class="table responsive-table highlight">
+    <canvas id="line-chart" width="100%"></canvas>
+    
+    <h5>Registros</h5>
+    <table class="table responsive-table highlight">
         <thead>
             <tr>
                 <th scope="col" style="width: 15%">Placa</th>

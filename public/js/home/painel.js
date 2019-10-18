@@ -87,12 +87,14 @@ function ver(id){
 }
 
 grafico();
+window.setInterval("grafico()",60000);
 
 function grafico(){
     $.ajax({
         type: 'post',
         dataType:'json',
         url: $("#link").val() + 'registro/listarGrafico',//Definindo o arquivo onde serão buscados os dados
+        data: {quant:7},
         success: function(dados){
             if(dados){
                 new Chart(document.getElementById("line-chart"), {
@@ -100,7 +102,7 @@ function grafico(){
                 data: {
                   labels: dados.label,
                   datasets: [{ 
-                      data: [2],
+                      data: dados.total,
                       label: "Registros",
                       borderColor: "#3e95cd",
                       fill: false
