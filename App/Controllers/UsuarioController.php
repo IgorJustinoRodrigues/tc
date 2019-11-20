@@ -36,7 +36,11 @@ class UsuarioController extends Controller{
         if(!is_numeric($_POST['id']) and $_POST['id'] != Sessao::getUsuario('id')){
             $this->nivelAcesso(1);
         } else {
-            $vetor['tipo_usuario_id'] = Sessao::getUsuario('tipo_usuario_id');
+            $permissoes = Sessao::getUsuario("permissoes");
+
+            if(!in_array(1, $permissoes)){
+                $vetor['tipo_usuario_id'] = Sessao::getUsuario('tipo_usuario_id');
+            }
         }
         
         if($_POST){
@@ -107,7 +111,6 @@ class UsuarioController extends Controller{
             }else{
                 $dados = array();
                 $campos = Usuario::CAMPOS;
-
                 if(trim($vetor['senha']) != ''){
                     if(trim($vetor['senha']) == trim($vetor['senha2'])){
                         unset($vetor['senha2']);
@@ -132,6 +135,7 @@ class UsuarioController extends Controller{
                         }else{
                             $dados[$indice] = $vetor[$indice];
                         }
+
                     }
                 }
                 
@@ -146,7 +150,6 @@ class UsuarioController extends Controller{
                 $valorCondicao = [$vetor['id']];
 
                 $resposta = $bo->update(Usuario::TABELA, $dados, $condicao, $valorCondicao, 1, $validacao);
-
                 if(!$resposta){
                     $mensagem = "Usuário sem alteração";
                     Sessao::gravaMensagem($mensagem);

@@ -11,7 +11,7 @@
                         <i class="large material-icons white-text" style="margin-top: 8px">assignment_ind</i>            
                     </div>
                     <div class="col s10 m7 l9">
-                        <h4 class="white-text"><?=$viewVar['quant_usuario']?> Usuário<?=$viewVar['quant_usuario'] > 1 ? 's' : ''?></h4>
+                        <h4 class="white-text"><?=$viewVar['quant_usuario'] > 0 ? $viewVar['quant_usuario'] : 0?> Usuário<?=$viewVar['quant_usuario'] > 1 ? 's' : ''?></h4>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                     <i class="large material-icons white-text">directions_car</i>
                 </div>
                 <div class="col s10 m7 l9">
-                    <h4 class="white-text">134 Veículos</h4>
+                    <h4 class="white-text"><?=$viewVar['quant_veiculo'] > 0 ? $viewVar['quant_veiculo'] : 0?> Veículo<?=$viewVar['quant_veiculo'] > 1 ? 's' : ''?></h4>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <i class="large material-icons white-text">equalizer</i>            
                 </div>
                 <div class="col s10 m7 l9">
-                    <h4 class="white-text">123 Registros</h4>
+                    <h4 class="white-text"><?=$viewVar['quant_registro'] > 0 ? $viewVar['quant_registro'] : 0?> Registro<?=$viewVar['quant_registro'] > 1 ? 's' : ''?></h4>
                 </div>
             </div>
         </div>

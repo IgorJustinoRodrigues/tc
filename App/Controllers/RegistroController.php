@@ -469,7 +469,7 @@ class RegistroController extends Controller{
             $this->setViewParam("quant", 3);
         }
         
-        $lista = $bo->listarVetor($tabela, $campos, null, null, $condicao, $valorCondicao, "r.id");
+        $lista = $bo->listarVetor($tabela, $campos, null, null, $condicao, $valorCondicao, "r.id desc");
         $this->setViewParam("busca", $busca);
         $this->setViewParam("lista", $lista);
         $this->render('registro/listar');

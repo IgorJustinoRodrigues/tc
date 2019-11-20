@@ -12,10 +12,7 @@
                     <label for="senha">Senha</label>
                 </div>
                 <br>
-                <button class="btn waves-effect waves-light blue right col s12 m4" style="margin-bottom: 10px" type="submit">Acessar
-                </button>
-                <a href="<?=LINK?>" class="btn waves-effect waves-light black col s12 m4" type="submit">Voltar
-                </a>
+                <button class="btn waves-effect waves-light blue right col s12 m4" style="margin-bottom: 10px" type="submit">Acessar</button>
             </div>
         </form>
     </div>

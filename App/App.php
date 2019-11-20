@@ -23,7 +23,7 @@ class App{
         define('CSS'            , RECURSO .'/css');
         define('JS'             , RECURSO .'/js');
         define('IMAGEM'         , RECURSO .'/imagem');
-        define('TITLE'          , "TC");
+        define('TITLE'          , "SICA");
         
         define('DB_HOST'        , "localhost");
         define('DB_USER'        , "root");
